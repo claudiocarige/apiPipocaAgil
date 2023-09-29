@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.domain;
 
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Users {
     private String name;
     @Column(unique = true)
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthday;
