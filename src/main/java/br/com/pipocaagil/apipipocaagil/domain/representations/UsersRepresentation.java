@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.domain.representations;
 
+import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -29,5 +30,5 @@ public class UsersRepresentation {
     private LocalDate birthday;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createDate = LocalDate.now();
-    private Integer role;
+    private UserPermissionType role;
 }

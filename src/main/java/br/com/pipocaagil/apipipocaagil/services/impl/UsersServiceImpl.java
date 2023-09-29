@@ -1,6 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users insert(Users user) {
+    public Users insert(UsersRepresentation usersRepresentation) {
         return null;
     }
 
     @Override
-    public Users update(Long id, Users user) {
+    public Users update(Long id, UsersRepresentation usersRepresentation) {
         return null;
     }
 
