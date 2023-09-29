@@ -16,6 +16,19 @@
     <properties>
         <java.version>11</java.version>
     </properties>
+    <developers>
+        <developer>
+            <id>claudioCarige</id>
+            <name>Claudio Carige</name>
+            <email>ccarige@gmail.com</email>
+            <url>https://www.linkedin.com/in/claudiocarige</url>
+            <roles>
+                <role>Desenvolvedor Java</role>
+                <role>Arquiteto de Software</role>
+            </roles>
+            <timezone>UTC-3</timezone>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
