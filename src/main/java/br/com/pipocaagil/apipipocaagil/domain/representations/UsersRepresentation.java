@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UsersRepresentation {
 
-
     private Long id;
     @NotNull(message = "O campo NOME é requerido!")
     private String name;

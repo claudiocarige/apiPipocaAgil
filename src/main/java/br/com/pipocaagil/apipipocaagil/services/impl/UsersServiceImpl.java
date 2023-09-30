@@ -5,6 +5,7 @@ import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentatio
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository userRepository;
+    private final ModelMapper mapper;
 
     @Override
     public Users findById(Long id) {
@@ -29,7 +31,8 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
-        return null;
+        usersRepresentation.setId(null);
+        return userRepository.save(mapper.map(usersRepresentation,Users.class));
     }
 
     @Override
@@ -41,4 +44,5 @@ public class UsersServiceImpl implements UsersService {
     public void delete(Long id) {
 
     }
+
 }
