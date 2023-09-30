@@ -4,6 +4,7 @@ import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users findById(Long id) {
         Optional<Users> user = userRepository.findById(id);
-        return user.orElseThrow();
+        return user.orElseThrow(() -> new NoSuchElementException("No Such Element"));
     }
 
     @Override
