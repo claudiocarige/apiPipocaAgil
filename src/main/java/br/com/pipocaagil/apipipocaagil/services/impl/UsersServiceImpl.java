@@ -4,6 +4,7 @@ import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,6 +34,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
+        findByEmail(usersRepresentation);
         return userRepository.save(mapper.map(usersRepresentation,Users.class));
     }
 
@@ -44,6 +46,13 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void delete(Long id) {
 
+    }
+
+    private void findByEmail(UsersRepresentation usersRepresentation){
+        Optional<Users> user = userRepository.findByEmail(usersRepresentation.getEmail());
+        if(user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())){
+            throw new DataIntegrityViolationException("E-mail já cadastrado! Favor revise sua requisição.");
+        }
     }
 
 }
