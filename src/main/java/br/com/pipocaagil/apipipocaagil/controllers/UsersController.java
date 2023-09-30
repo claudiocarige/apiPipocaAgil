@@ -41,4 +41,9 @@ public class UsersController {
         return ResponseEntity.created(uri).build();
     }
 
+    @GetMapping(value = "/email")
+    public ResponseEntity<UsersRepresentation> findByEmail(@RequestParam("email") String email){
+        return ResponseEntity.ok().body(mapper.map(userService.findByEmail(email), UsersRepresentation.class));
+    }
+
 }
