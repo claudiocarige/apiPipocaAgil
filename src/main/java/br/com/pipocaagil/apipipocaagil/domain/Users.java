@@ -46,4 +46,5 @@ public class Users {
     public int hashCode() {
         return Objects.hash(id, email);
     }
+
 }

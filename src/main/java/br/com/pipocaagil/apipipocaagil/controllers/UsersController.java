@@ -46,4 +46,11 @@ public class UsersController {
         return ResponseEntity.ok().body(mapper.map(userService.findByEmail(email), UsersRepresentation.class));
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UsersRepresentation> update(@PathVariable Long id,
+                                                      @Valid @RequestBody UsersRepresentation usersRepresentation){
+        return ResponseEntity.ok().body(mapper.map(userService.update(id, usersRepresentation),
+                                                                                        UsersRepresentation.class));
+    }
+
 }

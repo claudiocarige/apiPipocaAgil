@@ -29,6 +29,12 @@
             <timezone>UTC-3</timezone>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Fulano</name>
+            <email>fulano@mail.com</email>
+        </contributor>
+    </contributors>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

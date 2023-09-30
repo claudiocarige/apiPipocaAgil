@@ -46,7 +46,10 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users update(Long id, UsersRepresentation usersRepresentation) {
-        return null;
+        usersRepresentation.setId(id);
+        findById(usersRepresentation.getId());
+        checkEmail(usersRepresentation);
+        return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
     @Override
