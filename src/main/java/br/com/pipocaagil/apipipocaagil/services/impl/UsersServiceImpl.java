@@ -54,11 +54,12 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void delete(Long id) {
-
+        findById(id);
+        userRepository.deleteById(id);
     }
 
     private void checkEmail(UsersRepresentation usersRepresentation) {
-        Optional<Users> user = Optional.ofNullable(findByEmail(usersRepresentation.getEmail()));
+        Optional<Users> user = userRepository.findByEmail(usersRepresentation.getEmail());
         if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
             throw new DataIntegrityViolationException("E-mail já cadastrado! Favor revise sua requisição.");
         }
