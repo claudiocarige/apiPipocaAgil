@@ -27,6 +27,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public Users findByEmail(String email) {
+        Optional<Users> user = userRepository.findByEmail(email);
+        return user.orElseThrow(() -> new NoSuchElementException("E-mail não cadastrado!"));
+    }
+
+    @Override
     public List<Users> findAll() {
         return userRepository.findAll();
     }
@@ -34,8 +40,8 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
-        findByEmail(usersRepresentation);
-        return userRepository.save(mapper.map(usersRepresentation,Users.class));
+        checkEmail(usersRepresentation);
+        return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
     @Override
@@ -48,11 +54,10 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
-    private void findByEmail(UsersRepresentation usersRepresentation){
-        Optional<Users> user = userRepository.findByEmail(usersRepresentation.getEmail());
-        if(user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())){
+    private void checkEmail(UsersRepresentation usersRepresentation) {
+        Optional<Users> user = Optional.ofNullable(findByEmail(usersRepresentation.getEmail()));
+        if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
             throw new DataIntegrityViolationException("E-mail já cadastrado! Favor revise sua requisição.");
         }
     }
-
 }

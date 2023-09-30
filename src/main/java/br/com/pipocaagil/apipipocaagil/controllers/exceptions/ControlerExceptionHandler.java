@@ -22,8 +22,8 @@ public class ControlerExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardError> objectNotFound(DataIntegrityViolationException ex, HttpServletRequest request){
-        StandardError erro = new StandardError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(),
+        StandardError erro = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
 }
