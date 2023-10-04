@@ -19,7 +19,9 @@ public class UsersRepresentation {
 
     private Long id;
     @NotNull(message = "O campo NOME é requerido!")
-    private String name;
+    private String firstName;
+    @NotNull(message = "O campo SOBRENOME é requerido!")
+    private String lastName;
     @NotNull(message = "O campo EMAIL é requerido!")
     private String email;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
