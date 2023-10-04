@@ -39,7 +39,14 @@ public class UsersController {
                 .collect(Collectors.toList()));
     }
 
-    @GetMapping(value = "/name")
+    @GetMapping(value = "/name/firstname")
+    public ResponseEntity<List<UsersRepresentation>> findByNameIgnoreCase(@RequestParam("firstName") String firstName) {
+        return ResponseEntity.ok().body(userService.findByNameIgnoreCase(firstName)
+                .stream()
+                .map(x -> mapper.map(x, UsersRepresentation.class))
+                .collect(Collectors.toList()));
+    }
+    @GetMapping(value = "/firstname-or-lastname")
     public ResponseEntity<List<UsersRepresentation>> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(@RequestParam("firstNamePart") String firstNamePart,
                                                                                                                        @RequestParam("lastNamePart") String lastNamePart) {
         return ResponseEntity.ok().body(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)

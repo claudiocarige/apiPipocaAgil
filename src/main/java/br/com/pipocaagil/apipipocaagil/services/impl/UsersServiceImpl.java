@@ -58,6 +58,16 @@ public class UsersServiceImpl implements UsersService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public List<Users> findByNameIgnoreCase(String firstName) {
+        return userRepository.findByNameIgnoreCase(firstName);
+    }
+
+    @Override
+    public List<Users> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNamePart, String lastNamePart) {
+        return userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart);
+    }
+
     private void checkEmail(UsersRepresentation usersRepresentation) {
         Optional<Users> user = userRepository.findByEmail(usersRepresentation.getEmail());
         if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {

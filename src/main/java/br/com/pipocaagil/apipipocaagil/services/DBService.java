@@ -15,8 +15,8 @@ public class DBService {
     private final UsersRepository usersRepository;
 
     public void startDB() {
-        Users user01 = new Users(null, "Claudio", "ccarige@gmail.com", "123456", LocalDate.of(1974, 5, 9), LocalDate.now(), UserPermissionType.ADMIN);
-        Users user02 = new Users(null, "Maria", "maria@gmail.com", "123456", LocalDate.of(1976, 9, 8), LocalDate.now(), UserPermissionType.USER);
+        Users user01 = new Users(null, "Claudio", "Carigé", "ccarige@gmail.com", "123456", LocalDate.of(1974, 5, 9), LocalDate.now(), UserPermissionType.ADMIN);
+        Users user02 = new Users(null, "Maria", "Pimentel", "maria@gmail.com", "123456", LocalDate.of(1976, 9, 8), LocalDate.now(), UserPermissionType.USER);
         usersRepository.saveAll(Arrays.asList(user01,user02));
     }
 }
