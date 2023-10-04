@@ -22,28 +22,36 @@ public class UsersController {
     private final ModelMapper mapper;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UsersRepresentation> findById(@PathVariable Long id){
+    public ResponseEntity<UsersRepresentation> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UsersRepresentation.class));
     }
 
+    @GetMapping(value = "/email")
+    public ResponseEntity<UsersRepresentation> findByEmail(@RequestParam("email") String email) {
+        return ResponseEntity.ok().body(mapper.map(userService.findByEmail(email), UsersRepresentation.class));
+    }
+
     @GetMapping()
-    public ResponseEntity<List<UsersRepresentation>> findAll(){
+    public ResponseEntity<List<UsersRepresentation>> findAll() {
         return ResponseEntity.ok().body(userService.findAll()
                 .stream()
                 .map(x -> mapper.map(x, UsersRepresentation.class))
                 .collect(Collectors.toList()));
     }
 
+    @GetMapping(value = "/name")
+    public ResponseEntity<List<UsersRepresentation>> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(@RequestParam("firstNamePart") String firstNamePart,
+                                                                                                                       @RequestParam("lastNamePart") String lastNamePart) {
+        return ResponseEntity.ok().body(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)
+                .stream()
+                .map(x -> mapper.map(x, UsersRepresentation.class))
+                .collect(Collectors.toList()));
+    }
     @PostMapping()
     public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation){
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
         return ResponseEntity.created(uri).build();
-    }
-
-    @GetMapping(value = "/email")
-    public ResponseEntity<UsersRepresentation> findByEmail(@RequestParam("email") String email){
-        return ResponseEntity.ok().body(mapper.map(userService.findByEmail(email), UsersRepresentation.class));
     }
 
     @PutMapping(value = "/{id}")

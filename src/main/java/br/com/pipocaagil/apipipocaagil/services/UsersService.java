@@ -12,4 +12,6 @@ public interface UsersService {
     Users insert(UsersRepresentation usersRepresentation);
     Users update(Long id, UsersRepresentation usersRepresentation);
     void delete(Long id);
+
+    List<Users> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNamePart, String lastNamePart);
 }
