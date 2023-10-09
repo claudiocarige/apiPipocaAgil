@@ -33,6 +33,7 @@ public class Users {
     private LocalDate birthday;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createDate = LocalDate.now();
+    @Enumerated(EnumType.STRING)
     private UserPermissionType role;
 
     @Override
