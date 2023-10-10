@@ -1,6 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
@@ -41,6 +42,9 @@ public class UsersServiceImpl implements UsersService {
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation);
+        if (usersRepresentation.getRole() == null) {
+            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
+        }
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
