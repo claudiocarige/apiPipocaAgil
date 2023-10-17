@@ -21,18 +21,18 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private Long id;
     private String firstName;
     private String lastName;
-    @Column(unique = true)
-    private String email;
+    @Column(nullable = false, unique = true, length = 100)
+    private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false, length = 200)
     private String password;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthday;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate createDate = LocalDate.now();
+    private LocalDate createDate;
     @Enumerated(EnumType.STRING)
     private UserPermissionType role;
 
@@ -41,12 +41,12 @@ public class Users {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Users users = (Users) o;
-        return Objects.equals(id, users.id) && Objects.equals(email, users.email);
+        return Objects.equals(id, users.id) && Objects.equals(username, users.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email);
+        return Objects.hash(id, username);
     }
 
 }
