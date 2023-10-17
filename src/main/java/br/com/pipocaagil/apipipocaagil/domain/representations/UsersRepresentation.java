@@ -8,7 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Getter
@@ -18,18 +21,22 @@ import java.time.LocalDate;
 public class UsersRepresentation {
 
     private Long id;
-    @NotNull(message = "O campo NOME é requerido!")
+    @NotNull(message = "The NAME field is required!")
     private String firstName;
-    @NotNull(message = "O campo SOBRENOME é requerido!")
+    @NotNull(message = "The LAST NAME field is required!")
     private String lastName;
-    @NotNull(message = "O campo EMAIL é requerido!")
-    private String email;
+    @Email(message = "Email format is invalid", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
+    @NotNull(message = "The USERNAME field is required!")
+    private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotNull(message = "O campo SENHA é requerido!")
+    @NotNull(message = "The PASSWORD field is required!")
+    @Size(min = 8, max = 20)
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$", message = "Password format is invalid")
     private String password;
+    @NotNull(message = "The BIRTHDAY field is required!")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthday;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate createDate = LocalDate.now();
+    private LocalDate createDate;
     private UserPermissionType role;
 }
