@@ -4,26 +4,39 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolatio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class ControlerExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<StandardError> objectNotFound(NoSuchElementException ex, HttpServletRequest request){
-        StandardError erro = new StandardError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(),
+        StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardError> objectNotFound(DataIntegrityViolationException ex, HttpServletRequest request){
-        StandardError erro = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
+        StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> validationErrors(MethodArgumentNotValidException ex,
+                                                          HttpServletRequest request){
+        ValidationError error = new ValidationError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+                "Error in the validation of the fields", request.getRequestURI());
+        for (FieldError x : ex.getBindingResult().getFieldErrors()) {
+            error.addError(x.getField(), x.getDefaultMessage());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
