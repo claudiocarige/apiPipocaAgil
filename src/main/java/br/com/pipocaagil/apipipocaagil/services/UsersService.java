@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UsersService {
     Users findById(Long id);
-    Users findByEmail(String email);
+    Users findByUsername(String username);
     List<Users> findAll();
     Users insert(UsersRepresentation usersRepresentation);
     Users update(Long id, UsersRepresentation usersRepresentation);

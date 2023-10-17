@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +29,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Users findByEmail(String email) {
-        Optional<Users> user = userRepository.findByEmail(email);
+    public Users findByUsername(String username) {
+        Optional<Users> user = userRepository.findByUsername(username);
         return user.orElseThrow(() -> new NoSuchElementException("E-mail não cadastrado!"));
     }
 
@@ -41,18 +42,21 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
-        checkEmail(usersRepresentation);
+        checkEmail(usersRepresentation, "insert");
         if (usersRepresentation.getRole() == null) {
             usersRepresentation.setRole(UserPermissionType.ROLE_USER);
         }
+        usersRepresentation.setCreateDate(LocalDate.now());
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
     @Override
     public Users update(Long id, UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(id);
-        findById(usersRepresentation.getId());
-        checkEmail(usersRepresentation);
+        Users users = findById(usersRepresentation.getId());
+        checkEmail(usersRepresentation, "update");
+        usersRepresentation.setCreateDate(users.getCreateDate());
+        usersRepresentation.setRole(users.getRole());
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
@@ -72,10 +76,17 @@ public class UsersServiceImpl implements UsersService {
         return userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart);
     }
 
-    private void checkEmail(UsersRepresentation usersRepresentation) {
-        Optional<Users> user = userRepository.findByEmail(usersRepresentation.getEmail());
-        if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
-            throw new DataIntegrityViolationException("E-mail já cadastrado! Favor revise sua requisição.");
+    private void checkEmail(UsersRepresentation usersRepresentation, String test) {
+        Optional<Users> user = userRepository.findByUsername(usersRepresentation.getUsername());
+        if (test.equals("insert")) {
+            if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
+                throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
+            }
+        }else{
+            user = userRepository.findById(usersRepresentation.getId());
+            if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getUsername())) {
+                throw new DataIntegrityViolationException("Email cannot be changed.");
+            }
         }
     }
 }
