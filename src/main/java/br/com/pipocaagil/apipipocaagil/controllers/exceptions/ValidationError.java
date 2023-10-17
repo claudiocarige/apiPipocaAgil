@@ -1,6 +1,5 @@
 package br.com.pipocaagil.apipipocaagil.controllers.exceptions;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

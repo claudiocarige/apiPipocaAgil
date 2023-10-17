@@ -9,30 +9,31 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-@Service@RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class DBService {
 
     private final UsersRepository usersRepository;
 
     public void startDB() {
         Users user01 = new Users(
-                    null,
-                    "Claudio",
-                    "Carigé",
-                    "ccarige@gmail.com",
-                    "123456",
-                    LocalDate.of(1974, 5, 9),
-                    LocalDate.now(),
-                    UserPermissionType.ROLE_ADMIN);
+                null,
+                "Claudio",
+                "Carigé",
+                "ccarige@gmail.com",
+                "123456",
+                LocalDate.of(1974, 5, 9),
+                LocalDate.now(),
+                UserPermissionType.ROLE_ADMIN);
         Users user02 = new Users(
-                    null,
-                    "Maria",
-                    "Pimentel",
-                    "maria@gmail.com",
-                    "123456",
-                    LocalDate.of(1976, 9, 8),
-                    LocalDate.now(),
-                    UserPermissionType.ROLE_USER);
-        usersRepository.saveAll(Arrays.asList(user01,user02));
+                null,
+                "Maria",
+                "Pimentel",
+                "maria@gmail.com",
+                "123456",
+                LocalDate.of(1976, 9, 8),
+                LocalDate.now(),
+                UserPermissionType.ROLE_USER);
+        usersRepository.saveAll(Arrays.asList(user01, user02));
     }
 }
