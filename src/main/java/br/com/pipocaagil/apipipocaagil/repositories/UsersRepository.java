@@ -3,7 +3,9 @@ package br.com.pipocaagil.apipipocaagil.repositories;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,6 @@ public interface UsersRepository extends JpaRepository<Users,Long> {
 
     List<Users> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNamePart, String lastNamePart);
 
+    @Query("SELECT u FROM Users u WHERE u.birthday >= :startDate AND u.birthday <= :endDate")
+    List<Users> findByBirthdayBetween(@Param("startDate") LocalDate startDate, @Param ("endDate") LocalDate endDate);
 }

@@ -40,6 +40,21 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public List<Users> findByNameIgnoreCase(String firstName) {
+        return userRepository.findByNameIgnoreCase(firstName);
+    }
+
+    @Override
+    public List<Users> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNamePart, String lastNamePart) {
+        return userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart);
+    }
+
+    @Override
+    public List<Users> findByBirthdayBetween(LocalDate startDate, LocalDate endDate) {
+        return userRepository.findByBirthdayBetween(startDate, endDate);
+    }
+
+    @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation, "insert");
@@ -66,23 +81,13 @@ public class UsersServiceImpl implements UsersService {
         userRepository.deleteById(id);
     }
 
-    @Override
-    public List<Users> findByNameIgnoreCase(String firstName) {
-        return userRepository.findByNameIgnoreCase(firstName);
-    }
-
-    @Override
-    public List<Users> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(String firstNamePart, String lastNamePart) {
-        return userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart);
-    }
-
     private void checkEmail(UsersRepresentation usersRepresentation, String test) {
         Optional<Users> user = userRepository.findByUsername(usersRepresentation.getUsername());
         if (test.equals("insert")) {
             if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
                 throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
             }
-        }else{
+        } else {
             user = userRepository.findById(usersRepresentation.getId());
             if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getUsername())) {
                 throw new DataIntegrityViolationException("Email cannot be changed.");

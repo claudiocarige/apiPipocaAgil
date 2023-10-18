@@ -3,14 +3,16 @@ package br.com.pipocaagil.apipipocaagil.controllers;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import jakarta.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,13 @@ public class UsersController {
     public ResponseEntity<List<UsersRepresentation>> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(@RequestParam("firstNamePart") String firstNamePart,
                                                                                                                        @RequestParam("lastNamePart") String lastNamePart) {
         return ResponseEntity.ok().body(toRepresentation(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)));
+    }
+
+    @GetMapping(value = "/birthday")
+    public ResponseEntity<List<UsersRepresentation>> findByBirthdayBetween(
+            @RequestParam("startDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate){
+        return ResponseEntity.ok().body(toRepresentation(userService.findByBirthdayBetween(startDate, endDate)));
     }
 
     @PostMapping()
