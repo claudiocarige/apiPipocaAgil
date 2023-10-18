@@ -14,7 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "api/v1/users")
@@ -36,25 +35,25 @@ public class UsersController {
 
     @GetMapping()
     public ResponseEntity<List<UsersRepresentation>> findAll() {
-        return ResponseEntity.ok().body(toRepresentation(userService.findAll()));
+        return ResponseEntity.ok().body(toConvertCollection(userService.findAll()));
     }
 
     @GetMapping(value = "/name/firstname")
     public ResponseEntity<List<UsersRepresentation>> findByNameIgnoreCase(@RequestParam("firstName") String firstName) {
-        return ResponseEntity.ok().body(toRepresentation(userService.findByNameIgnoreCase(firstName)));
+        return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstName)));
     }
 
     @GetMapping(value = "/firtname-lastname")
     public ResponseEntity<List<UsersRepresentation>> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(@RequestParam("firstNamePart") String firstNamePart,
                                                                                                                        @RequestParam("lastNamePart") String lastNamePart) {
-        return ResponseEntity.ok().body(toRepresentation(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)));
+        return ResponseEntity.ok().body(toConvertCollection(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)));
     }
 
     @GetMapping(value = "/birthday")
     public ResponseEntity<List<UsersRepresentation>> findByBirthdayBetween(
             @RequestParam("startDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate){
-        return ResponseEntity.ok().body(toRepresentation(userService.findByBirthdayBetween(startDate, endDate)));
+        return ResponseEntity.ok().body(toConvertCollection(userService.findByBirthdayBetween(startDate, endDate)));
     }
 
     @PostMapping()
@@ -77,10 +76,10 @@ public class UsersController {
         return ResponseEntity.noContent().build();
     }
 
-    private List<UsersRepresentation> toRepresentation(List<Users> users) {
+    private List<UsersRepresentation> toConvertCollection(List<Users> users) {
         return users
                 .stream()
                 .map(x -> mapper.map(x, UsersRepresentation.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
