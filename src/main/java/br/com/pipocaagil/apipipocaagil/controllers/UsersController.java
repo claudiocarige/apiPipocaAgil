@@ -191,8 +191,8 @@ public class UsersController {
     }
 
     @PatchMapping(value = "/password/{id}")
-    @Operation(summary = "Update a User",
-            description = "Updates a user by passing a JSON representation of the user to be added.",
+    @Operation(summary = "Update your password ",
+            description = "Updates the user's password by passing a JSON representation of the user's old password and a new password and its confirmation.",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "204",
