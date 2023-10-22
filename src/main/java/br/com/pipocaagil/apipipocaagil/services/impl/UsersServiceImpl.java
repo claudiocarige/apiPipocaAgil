@@ -9,6 +9,7 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolatio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository userRepository;
     private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Users findById(Long id) {
@@ -31,7 +33,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public Users findByUsername(String username) {
         Optional<Users> user = userRepository.findByUsername(username);
-        return user.orElseThrow(() -> new NoSuchElementException("E-mail não cadastrado!"));
+        return user.orElseThrow(() -> new NoSuchElementException("E-mail not registered! Please review your request."));
     }
 
     @Override
@@ -58,20 +60,20 @@ public class UsersServiceImpl implements UsersService {
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation, "insert");
-        if (usersRepresentation.getRole() == null) {
-            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
-        }
+        cheCkRole(usersRepresentation);
         usersRepresentation.setCreateDate(LocalDate.now());
+        usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
     @Override
     public Users update(Long id, UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(id);
-        Users users = findById(usersRepresentation.getId());
+        Users user = findById(usersRepresentation.getId());
         checkEmail(usersRepresentation, "update");
-        usersRepresentation.setCreateDate(users.getCreateDate());
-        usersRepresentation.setRole(users.getRole());
+        checkPassword(usersRepresentation, user);
+        usersRepresentation.setCreateDate(user.getCreateDate());
+        usersRepresentation.setRole(user.getRole());
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
@@ -92,6 +94,21 @@ public class UsersServiceImpl implements UsersService {
             if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getUsername())) {
                 throw new DataIntegrityViolationException("Email cannot be changed.");
             }
+        }
+    }
+
+    private void checkPassword(UsersRepresentation usersRepresentation, Users user){
+        if (!passwordEncoder.matches(usersRepresentation.getPassword(), user.getPassword())){
+            usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
+        }else{
+            usersRepresentation.setPassword(user.getPassword());
+        }
+    }
+    private void cheCkRole(UsersRepresentation usersRepresentation){
+        if (usersRepresentation.getRole() == null) {
+            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
+        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN)){
+            usersRepresentation.setRole(usersRepresentation.getRole());
         }
     }
 }
