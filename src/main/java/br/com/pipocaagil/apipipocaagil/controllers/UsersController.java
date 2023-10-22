@@ -190,7 +190,7 @@ public class UsersController {
                 UsersRepresentation.class));
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/password/{id}")
     @Operation(summary = "Update a User",
             description = "Updates a user by passing a JSON representation of the user to be added.",
             tags = {"Users"},
