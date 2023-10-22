@@ -1,6 +1,8 @@
 package br.com.pipocaagil.apipipocaagil.domain.representations;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,8 +19,12 @@ public class UserPasswordRepresentation {
     @NotBlank(message = "OldPassword is required")
     private String oldPassword;
     @NotBlank(message = "NewPassword is required")
+    @Size(min = 8, max = 20)
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$", message = "Password format is invalid")
     private String newPassword;
     @NotBlank(message = "ConfirmPassword is required")
+    @Size(min = 8, max = 20)
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$", message = "Password format is invalid")
     private String confirmPassword;
 
     @Override

@@ -132,16 +132,9 @@ public class UsersServiceImpl implements UsersService {
     }
 
     private void checkPassword(Long id, UserPasswordRepresentation pass){
-        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$";
         Users user = findById(id);
         if (!passwordEncoder.matches(pass.getOldPassword(), user.getPassword())){
             throw new PasswordInvalidException("Old password is invalid!");
-        }
-        if (!pass.getNewPassword().matches(regex)){
-            throw new PasswordInvalidException("New password is invalid!");
-        }
-        if (!pass.getConfirmPassword().matches(regex)){
-            throw new PasswordInvalidException("Confirm password is invalid!");
         }
         if (!pass.getNewPassword().equals(pass.getConfirmPassword())){
             throw new PasswordInvalidException("New password and confirm password are different!");
