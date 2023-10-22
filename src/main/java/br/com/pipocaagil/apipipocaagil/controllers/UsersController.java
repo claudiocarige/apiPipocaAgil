@@ -1,6 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +53,7 @@ public class UsersController {
     }
 
     @GetMapping(value = "/username")
-    @Operation(summary = "Find a User by username", description = "Find a User by username",
+    @Operation(summary = "Find a User by username", description = "Find a User by username (e-mail)",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -174,7 +175,7 @@ public class UsersController {
             description = "Updates a user by passing a JSON representation of the user to be added.",
             tags = {"Users"},
             responses = {
-                    @ApiResponse(description = "Update", responseCode = "200",
+                    @ApiResponse(description = "Success", responseCode = "200",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsersRepresentation.class))
                     ),
                     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
@@ -187,6 +188,26 @@ public class UsersController {
         checkUser(id);
         return ResponseEntity.ok().body(mapper.map(userService.update(id, usersRepresentation),
                 UsersRepresentation.class));
+    }
+
+    @PatchMapping(value = "/{id}")
+    @Operation(summary = "Update a User",
+            description = "Updates a user by passing a JSON representation of the user to be added.",
+            tags = {"Users"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "204",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPasswordRepresentation.class))
+                    ),
+                    @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
+            })
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordRepresentation pass) {
+        checkUser(id);
+        userService.updatePassword(id, pass);
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")

@@ -2,11 +2,14 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -70,7 +73,7 @@ public class UsersServiceImpl implements UsersService {
         usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
-
+    @Transactional
     @Override
     public Users update(Long id, UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(id);
@@ -82,6 +85,16 @@ public class UsersServiceImpl implements UsersService {
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
+    @Transactional
+    @Override
+    public void updatePassword(Long id, UserPasswordRepresentation pass){
+        checkPassword(id, pass);
+        Users user = findById(id);
+        user.setPassword(passwordEncoder.encode(pass.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @Transactional
     @Override
     public void delete(Long id) {
         findById(id);
@@ -102,6 +115,14 @@ public class UsersServiceImpl implements UsersService {
         }
     }
 
+    private void cheCkRole(UsersRepresentation usersRepresentation){
+        if (usersRepresentation.getRole() == null) {
+            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
+        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN)){
+            usersRepresentation.setRole(usersRepresentation.getRole());
+        }
+    }
+
     private void checkPassword(UsersRepresentation usersRepresentation, Users user){
         if (!passwordEncoder.matches(usersRepresentation.getPassword(), user.getPassword())){
             usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
@@ -109,11 +130,21 @@ public class UsersServiceImpl implements UsersService {
             usersRepresentation.setPassword(user.getPassword());
         }
     }
-    private void cheCkRole(UsersRepresentation usersRepresentation){
-        if (usersRepresentation.getRole() == null) {
-            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
-        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN)){
-            usersRepresentation.setRole(usersRepresentation.getRole());
+
+    private void checkPassword(Long id, UserPasswordRepresentation pass){
+        String regex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$";
+        Users user = findById(id);
+        if (!passwordEncoder.matches(pass.getOldPassword(), user.getPassword())){
+            throw new PasswordInvalidException("Old password is invalid!");
+        }
+        if (!pass.getNewPassword().matches(regex)){
+            throw new PasswordInvalidException("New password is invalid!");
+        }
+        if (!pass.getConfirmPassword().matches(regex)){
+            throw new PasswordInvalidException("Confirm password is invalid!");
+        }
+        if (!pass.getNewPassword().equals(pass.getConfirmPassword())){
+            throw new PasswordInvalidException("New password and confirm password are different!");
         }
     }
 }
