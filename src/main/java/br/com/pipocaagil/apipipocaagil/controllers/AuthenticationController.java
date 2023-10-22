@@ -1,18 +1,24 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.controllers.exceptions.StandardError;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
-import br.com.pipocaagil.apipipocaagil.services.UsersService;
+import br.com.pipocaagil.apipipocaagil.jwt.JwtToken;
+import br.com.pipocaagil.apipipocaagil.jwt.JwtUserDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
-@Tag(name = "Authenticated", description = "Contains all operations related to the resources for Authenticated a User.")
 public class AuthenticationController {
 
-    private final UsersService userService;
+    private final JwtUserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping(value = "/auth")
     @Operation(summary = "Authenticate User",
@@ -39,13 +45,22 @@ public class AuthenticationController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<String> auth(@RequestBody UserLoginRepresentation userLoginRepresentation) {
-        Users user = userService.findByUsername(userLoginRepresentation.getUsername());
-        if (user == null || !user.getPassword().equals(userLoginRepresentation.getPassword())) {
-            log.info("Invalid credentials");
-            return ResponseEntity.badRequest().body("Invalid credentials");
+    public ResponseEntity<?> auth(@RequestBody @Valid UserLoginRepresentation userLoginRepresentation,
+                                         HttpServletRequest request) {
+        log.info("Authentication process by username {}", userLoginRepresentation.getUsername());
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userLoginRepresentation.getUsername(),
+                                                            userLoginRepresentation.getPassword());
+
+            authenticationManager.authenticate(authenticationToken);
+            JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getUsername());
+
+            return ResponseEntity.ok(token);
+
+        } catch (AuthenticationException ex) {
+            log.warn("Bad Credentials from username '{}'", userLoginRepresentation.getUsername());
         }
-        log.info("Successfully authenticated");
-        return ResponseEntity.ok().body("Successfully authenticated");
+        return ResponseEntity.badRequest().body(new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Credentials", request.getRequestURI()));
     }
 }
