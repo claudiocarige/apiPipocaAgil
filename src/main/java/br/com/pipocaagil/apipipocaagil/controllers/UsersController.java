@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -100,8 +104,8 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<List<UsersRepresentation>> findByNameIgnoreCase(@RequestParam("firstName") String firstName) {
-        return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstName)));
+    public ResponseEntity<List<UsersRepresentation>> findByNameIgnoreCase(@RequestParam("firstname") String firstname) {
+        return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstname)));
     }
 
     @GetMapping(value = "/firtname-lastname")
@@ -185,6 +189,7 @@ public class UsersController {
                 UsersRepresentation.class));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Deletes a User by Id",
             description = "Deletes a User by id.",
