@@ -58,7 +58,7 @@ public class JwtUtils {
                     .setSigningKey(generateKey()).build()
                     .parseClaimsJws(refactorToken(token)).getBody();
         } catch (JwtException ex) {
-            log.error(String.format("Token invalido %s", ex.getMessage()));
+            log.error(String.format("Invalid Token %s", ex.getMessage()));
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class JwtUtils {
                     .parseClaimsJws(refactorToken(token));
             return true;
         } catch (JwtException ex) {
-            log.error(String.format("Token invalido %s", ex.getMessage()));
+            log.error(String.format("Invalid Token %s", ex.getMessage()));
         }
         return false;
     }

@@ -26,13 +26,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         final String token = request.getHeader(JwtUtils.JWT_AUTHORIZATION);
 
         if (token == null || !token.startsWith(JwtUtils.JWT_BEARER)) {
-            log.info("JWT Token está nulo, vazio ou não iniciado com 'Bearer '.");
+            log.info("JWT Token is null, empty, or not started with 'Bearer'.");
             filterChain.doFilter(request, response);
             return;
         }
 
         if (!JwtUtils.isTokenValid(token)) {
-            log.warn("JWT Token está inválido ou expirado.");
+            log.warn("JWT Token is invalid or expired.");
             filterChain.doFilter(request, response);
             return;
         }

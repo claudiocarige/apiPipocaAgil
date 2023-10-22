@@ -35,7 +35,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/auth")
     @Operation(summary = "Authenticate User",
-            description = "Authenticate a user by providing credentials.",
+            description = "Authenticate a user by providing credentials with Username(e-mail) and password.",
             tags = {"Authentication"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -61,6 +61,8 @@ public class AuthenticationController {
         } catch (AuthenticationException ex) {
             log.warn("Bad Credentials from username '{}'", userLoginRepresentation.getUsername());
         }
-        return ResponseEntity.badRequest().body(new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Credentials", request.getRequestURI()));
+        return ResponseEntity.badRequest().body(new StandardError(System.currentTimeMillis(),
+                HttpStatus.BAD_REQUEST.value(),"Bad Credentials. There is an error in the email or password.",
+                                                                                              request.getRequestURI()));
     }
 }
