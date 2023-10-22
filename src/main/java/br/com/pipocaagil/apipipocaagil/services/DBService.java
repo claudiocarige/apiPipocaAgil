@@ -4,6 +4,7 @@ import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 public class DBService {
 
     private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void startDB() {
         Users user01 = new Users(
@@ -21,7 +23,7 @@ public class DBService {
                 "Claudio",
                 "Carigé",
                 "ccarige@gmail.com",
-                "123456",
+                passwordEncoder.encode("Mklauro@2023"),
                 LocalDate.of(1974, 5, 9),
                 LocalDate.now(),
                 UserPermissionType.ROLE_ADMIN);
@@ -30,7 +32,7 @@ public class DBService {
                 "Maria",
                 "Pimentel",
                 "maria@gmail.com",
-                "123456",
+                passwordEncoder.encode("Mklauro@2024"),
                 LocalDate.of(1976, 9, 8),
                 LocalDate.now(),
                 UserPermissionType.ROLE_USER);
