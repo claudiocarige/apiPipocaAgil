@@ -57,6 +57,11 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public UserPermissionType findByRoleFromUsername(String username) {
+        return userRepository.findRoleByUsername(username);
+    }
+
+    @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation, "insert");
