@@ -44,11 +44,12 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<UsersRepresentation> findById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(mapper.map(userService.findById(id), UsersRepresentation.class));
+        UsersRepresentation usersRepresentation = new UsersRepresentation();
+        return ResponseEntity.ok().body(usersRepresentation.toRepresentation(userService.findById(id)));
     }
 
-    @GetMapping(value = "/username")
-    @Operation(summary = "Find a User by username", description = "Find a User by username",
+    @GetMapping(value = "/email")
+    @Operation(summary = "Find a User by E-mail", description = "Find a User by E-mail",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -60,8 +61,9 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<UsersRepresentation> findByUsername(@RequestParam("username") String username) {
-        return ResponseEntity.ok().body(mapper.map(userService.findByUsername(username), UsersRepresentation.class));
+    public ResponseEntity<UsersRepresentation> findByEmail(@RequestParam("email") String email) {
+        UsersRepresentation usersRepresentation = new UsersRepresentation();
+        return ResponseEntity.ok().body(usersRepresentation.toRepresentation(userService.findByUsername(email)));
     }
 
     @GetMapping()
@@ -180,8 +182,7 @@ public class UsersController {
             })
     public ResponseEntity<UsersRepresentation> update(@PathVariable Long id,
                                                       @Valid @RequestBody UsersRepresentation usersRepresentation) {
-        return ResponseEntity.ok().body(mapper.map(userService.update(id, usersRepresentation),
-                UsersRepresentation.class));
+        return ResponseEntity.ok().body(usersRepresentation.toRepresentation(userService.update(id, usersRepresentation)));
     }
 
     @DeleteMapping(value = "/{id}")
@@ -201,9 +202,10 @@ public class UsersController {
     }
 
     private List<UsersRepresentation> toConvertCollection(List<Users> users) {
+        UsersRepresentation usersRepresentation = new UsersRepresentation();
         return users
                 .stream()
-                .map(x -> mapper.map(x, UsersRepresentation.class))
+                .map(usersRepresentation::toRepresentation)
                 .toList();
     }
 }
