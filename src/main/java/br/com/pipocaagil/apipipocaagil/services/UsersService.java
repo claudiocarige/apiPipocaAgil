@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.services;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 
@@ -20,5 +21,6 @@ public interface UsersService {
     List<Users> findByBirthdayBetween(LocalDate startDate, LocalDate endDate);
     UserPermissionType findByRoleFromUsername(String username);
     void updatePassword(Long id, UserPasswordRepresentation pass);
+    void updateRoleToSigned(UserLoginRepresentation userLoginRepresentation, UserPermissionType role);
 }
 

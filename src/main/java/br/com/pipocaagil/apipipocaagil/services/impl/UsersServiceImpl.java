@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
@@ -92,6 +93,13 @@ public class UsersServiceImpl implements UsersService {
         Users user = findById(id);
         user.setPassword(passwordEncoder.encode(pass.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public void updateRoleToSigned(UserLoginRepresentation userLoginRepresentation, UserPermissionType role) {
+        Users user = findByUsername(userLoginRepresentation.getUsername());
+        user.setRole(role);
+        userRepository.updateRoleToSigned(user.getRole(), user.getId());
     }
 
     @Transactional
