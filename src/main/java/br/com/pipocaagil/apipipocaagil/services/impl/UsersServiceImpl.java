@@ -10,6 +10,7 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementExceptio
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,7 +54,7 @@ public class UsersServiceImpl implements UsersService {
     public List<Users> findByBirthdayBetween(LocalDate startDate, LocalDate endDate) {
         return userRepository.findByBirthdayBetween(startDate, endDate);
     }
-
+    @Transactional
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
@@ -65,6 +66,7 @@ public class UsersServiceImpl implements UsersService {
         return userRepository.save(usersRepresentation.toUser(usersRepresentation));
     }
 
+    @Transactional
     @Override
     public Users update(Long id, UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(id);

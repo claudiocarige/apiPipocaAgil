@@ -164,7 +164,7 @@ public class UsersController {
     public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
-        //serviço de email
+
         emailSendingService.sendOrderConfirmationEmail(usersRepresentation.getEmail(),
                 "Bem vindo ao Pipoca Ágil", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
         return ResponseEntity.created(uri).build();
