@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.EmailSendingService;
 import br.com.pipocaagil.apipipocaagil.services.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +28,7 @@ import java.util.List;
 public class UsersController {
 
     private final UsersService userService;
-    private final ModelMapper mapper;
+    private final EmailSendingService emailSendingService;
 
     @GetMapping(value = "/{id}")
     @Operation(summary = "Find a User by id", description = "Find a User by Id",
@@ -164,6 +164,9 @@ public class UsersController {
     public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
+        //serviço de email
+        emailSendingService.sendOrderConfirmationEmail(usersRepresentation.getEmail(),
+                "Bem vindo ao Pipoca Ágil", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
         return ResponseEntity.created(uri).build();
     }
 
