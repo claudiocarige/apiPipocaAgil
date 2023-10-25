@@ -5,7 +5,7 @@ import br.com.pipocaagil.apipipocaagil.domain.representations.CardDetailsReprese
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.jwt.JwtToken;
 import br.com.pipocaagil.apipipocaagil.jwt.JwtUserDetailsService;
-import br.com.pipocaagil.apipipocaagil.services.UsersSignatureService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

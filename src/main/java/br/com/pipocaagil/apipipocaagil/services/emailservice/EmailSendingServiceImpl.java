@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.services.emailservice;
 
-import br.com.pipocaagil.apipipocaagil.services.EmailSendingService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.EmailSendingService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

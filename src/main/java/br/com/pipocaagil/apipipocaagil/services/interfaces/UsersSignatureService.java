@@ -1,4 +1,4 @@
-package br.com.pipocaagil.apipipocaagil.services;
+package br.com.pipocaagil.apipipocaagil.services.interfaces;
 
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;

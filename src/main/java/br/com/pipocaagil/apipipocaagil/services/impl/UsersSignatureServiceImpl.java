@@ -2,8 +2,8 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
-import br.com.pipocaagil.apipipocaagil.services.UsersService;
-import br.com.pipocaagil.apipipocaagil.services.UsersSignatureService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
