@@ -1,9 +1,11 @@
 package br.com.pipocaagil.apipipocaagil.domain.representations;
 
-import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +31,7 @@ public class UsersRepresentation {
 
     @Email(message = "Email format is invalid", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
     @NotNull(message = "The USERNAME field is required!")
-    private String username;//colocar como e-mail e
+    private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotNull(message = "The PASSWORD field is required!")
@@ -44,5 +46,5 @@ public class UsersRepresentation {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createDate;
 
-    private UserPermissionType role;
+    private String role;
 }
