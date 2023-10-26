@@ -54,8 +54,8 @@ public class UsersController {
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UsersRepresentation.class));
     }
 
-    @GetMapping(value = "/username")
-    @Operation(summary = "Find a User by username", description = "Find a User by username (e-mail)",
+    @GetMapping(value = "/email")
+    @Operation(summary = "Find a User by E-mail", description = "Find a User by E-mail",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -67,8 +67,8 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<UsersRepresentation> findByUsername(@RequestParam("username") String username) {
-        return ResponseEntity.ok().body(mapper.map(userService.findByUsername(username), UsersRepresentation.class));
+    public ResponseEntity<UsersRepresentation> findByUsername(@RequestParam("email") String email) {
+        return ResponseEntity.ok().body(mapper.map(userService.findByUsername(email), UsersRepresentation.class));
     }
 
     @GetMapping()

@@ -2,7 +2,6 @@ package br.com.pipocaagil.apipipocaagil.domain.representations;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -29,8 +28,9 @@ public class UsersRepresentation {
     @Size(max = 60)
     private String lastName;
 
-    @Email(message = "Email format is invalid", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
-    @NotNull(message = "The USERNAME field is required!")
+
+    @Pattern(regexp = "^[a-zA-Z0-9._+-]+@[a-z]+\\.[a-z]{2,}(?:\\.[a-z]{2,3})?$", message = "Email format is invalid")
+    @NotNull(message = "The EMAIL field is required!")
     private String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
