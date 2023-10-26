@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.controllers;
 
 
 import br.com.pipocaagil.apipipocaagil.controllers.exceptions.StandardError;
+import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.jwt.JwtToken;
@@ -47,19 +48,22 @@ public class AuthenticationController {
             })
     public ResponseEntity<?> auth(@RequestBody @Valid UserLoginRepresentation userLoginRepresentation,
                                          HttpServletRequest request) {
-        log.info("Authentication process by username {}", userLoginRepresentation.getUsername());
+        log.info("Authentication process by EMAIL {}", userLoginRepresentation.getEmail());
+        Users user = new Users();
+        user.setUsername(userLoginRepresentation.getEmail());
+        user.setPassword(userLoginRepresentation.getPassword());
         try {
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userLoginRepresentation.getUsername(),
-                                                            userLoginRepresentation.getPassword());
+                    new UsernamePasswordAuthenticationToken(user.getUsername(),
+                                                            user.getPassword());
 
             authenticationManager.authenticate(authenticationToken);
-            JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getUsername());
+            JwtToken token = userDetailsService.getTokenAuthenticated(user.getUsername());
 
             return ResponseEntity.ok(token);
 
         } catch (AuthenticationException ex) {
-            log.warn("Bad Credentials from username '{}'", userLoginRepresentation.getUsername());
+            log.warn("Bad Credentials from username '{}'", user.getUsername());
         }
         return ResponseEntity.badRequest().body(new StandardError(System.currentTimeMillis(),
                 HttpStatus.BAD_REQUEST.value(),"Bad Credentials. There is an error in the email or password.",

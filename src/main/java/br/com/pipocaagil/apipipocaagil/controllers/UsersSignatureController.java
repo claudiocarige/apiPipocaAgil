@@ -38,7 +38,7 @@ public class UsersSignatureController {
 
         //configurar o pagamento com os dados do cartão
         signatureService.signatureToUser(userLoginRepresentation, UserPermissionType.ROLE_SIGNED);
-        JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getUsername());
+        JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getEmail());
         return ResponseEntity.ok(token);
     }
 

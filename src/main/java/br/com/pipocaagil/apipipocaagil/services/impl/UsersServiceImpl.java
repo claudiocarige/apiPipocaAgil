@@ -12,6 +12,7 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementExceptio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
@@ -82,7 +84,7 @@ public class UsersServiceImpl implements UsersService {
         checkEmail(usersRepresentation, "update");
         checkPassword(usersRepresentation, user);
         usersRepresentation.setCreateDate(user.getCreateDate());
-        usersRepresentation.setRole(user.getRole());
+        usersRepresentation.setRole(user.getRole().toString());
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
 
@@ -97,7 +99,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public void updateRoleToSigned(UserLoginRepresentation userLoginRepresentation, UserPermissionType role) {
-        Users user = findByUsername(userLoginRepresentation.getUsername());
+        Users user = findByUsername(userLoginRepresentation.getEmail());
         user.setRole(role);
         userRepository.updateRoleToSigned(user.getRole(), user.getId());
     }
@@ -110,14 +112,14 @@ public class UsersServiceImpl implements UsersService {
     }
 
     private void checkEmail(UsersRepresentation usersRepresentation, String test) {
-        Optional<Users> user = userRepository.findByUsername(usersRepresentation.getUsername());
+        Optional<Users> user = userRepository.findByUsername(usersRepresentation.getEmail());
         if (test.equals("insert")) {
             if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
                 throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
             }
         } else {
             user = userRepository.findById(usersRepresentation.getId());
-            if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getUsername())) {
+            if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getEmail())) {
                 throw new DataIntegrityViolationException("Email cannot be changed.");
             }
         }
@@ -125,8 +127,8 @@ public class UsersServiceImpl implements UsersService {
 
     private void cheCkRole(UsersRepresentation usersRepresentation){
         if (usersRepresentation.getRole() == null) {
-            usersRepresentation.setRole(UserPermissionType.ROLE_USER);
-        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN)){
+            usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
+        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN.name())){
             usersRepresentation.setRole(usersRepresentation.getRole());
         }
     }
