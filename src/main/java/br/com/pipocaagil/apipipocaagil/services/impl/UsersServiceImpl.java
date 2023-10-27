@@ -10,7 +10,7 @@ import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -97,6 +97,7 @@ public class UsersServiceImpl implements UsersService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void updateRoleToSigned(UserLoginRepresentation userLoginRepresentation, UserPermissionType role) {
         Users user = findByUsername(userLoginRepresentation.getEmail());
