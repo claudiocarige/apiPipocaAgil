@@ -21,7 +21,7 @@ public class CardDetailsRepresentation {
     @NotNull(message = "The SECURITYCODE field is required!")
     private String securityCode;
     @NotNull(message = "The CPF field is required!")
-    @CPF
+    @CPF(message = "CPF format is invalid")
     private String cpf;
     @NotNull(message = "The EXPIRATIONDATE field is required!")
     @JsonFormat(pattern = "MM/yyyy")
