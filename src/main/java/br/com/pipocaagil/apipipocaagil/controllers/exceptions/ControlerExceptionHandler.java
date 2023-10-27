@@ -66,4 +66,11 @@ public class ControlerExceptionHandler {
                 ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+
+    @ExceptionHandler(PaymentAuthorizationException.class)
+    public ResponseEntity<StandardError> paymentAuthorizationException(PaymentAuthorizationException ex, HttpServletRequest request){
+        StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
 }
