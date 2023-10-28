@@ -66,7 +66,7 @@ public class PasswordUserController {
             })
     public ResponseEntity<String> resetPassword(@PathVariable String email) throws MessagingException {
         var password = passwordUserService.resetPassword(email);
-        emailSendingService.sendOrderConfirmationEmail(email,
+        emailSendingService.sendEmail(email,
                 "Recuperação de senha!", password);
         return ResponseEntity.ok().body("Password sent to the E-mail!");
     }
