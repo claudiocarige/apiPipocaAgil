@@ -237,15 +237,4 @@ public class UsersController {
                 .map(x -> mapper.map(x, UsersRepresentation.class))
                 .toList();
     }
-
-    private void checkUser(Long id){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var username = authentication.getName();
-        if (username != null ) {
-            var userId = userService.findByUsername(username);
-            if (!id.equals(userId.getId())) {
-                throw new AccessDeniedException("Access denied, You're not authorized to modify this User");
-            }
-        }
-    }
 }
