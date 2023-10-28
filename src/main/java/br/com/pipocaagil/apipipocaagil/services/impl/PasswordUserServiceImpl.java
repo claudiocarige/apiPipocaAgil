@@ -33,7 +33,7 @@ public class PasswordUserServiceImpl implements PasswordUserService {
 
     @Transactional
     @Override
-    public String resetPassword(String email) {
+    public String passwordRecovery(String email) {
         var password = randomPasswordGenerator();
         userRepository.resetPassword(passwordEncoder.encode(password), email);
         return password;

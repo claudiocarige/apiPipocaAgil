@@ -64,8 +64,8 @@ public class PasswordUserController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<String> resetPassword(@PathVariable String email) throws MessagingException {
-        var password = passwordUserService.resetPassword(email);
+    public ResponseEntity<String> passwordRecovery(@PathVariable String email) throws MessagingException {
+        var password = passwordUserService.passwordRecovery(email);
         emailSendingService.sendEmail(email,
                 "Recuperação de senha!", password);
         return ResponseEntity.ok().body("Password sent to the E-mail!");

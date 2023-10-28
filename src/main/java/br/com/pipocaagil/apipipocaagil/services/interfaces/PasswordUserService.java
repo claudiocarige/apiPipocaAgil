@@ -5,6 +5,6 @@ import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepres
 public interface PasswordUserService {
 
     void updatePassword(Long id, UserPasswordRepresentation pass);
-    String resetPassword(String email);
+    String passwordRecovery(String email);
 
 }
