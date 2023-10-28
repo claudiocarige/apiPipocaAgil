@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users/password")
+@RequestMapping("/api/v1/password")
 @Tag(name = "Password", description = "Contains all operations related to the resources for reset, editing, deleting a Password.")
 public class PasswordUserController {
 

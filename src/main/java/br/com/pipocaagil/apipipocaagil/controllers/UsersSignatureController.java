@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users/signature")
+@RequestMapping("/api/v1/signature")
 @Tag(name = "Signing users", description = "Contains all operations related to the resources Signing users.")
 public class UsersSignatureController {
 
