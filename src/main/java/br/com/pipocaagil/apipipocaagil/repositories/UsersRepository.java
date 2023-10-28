@@ -27,4 +27,8 @@ public interface UsersRepository extends JpaRepository<Users,Long> {
     @Modifying
     @Query("UPDATE Users u SET u.role = :role  WHERE u.id = :userId")
     void updateRoleToSigned(@Param("role") UserPermissionType role , @Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE Users u SET u.password = :password  WHERE u.username = :email")
+    void resetPassword(@Param("password") String password, @Param("email")  String email);
 }
