@@ -37,7 +37,7 @@ public class UsersSignatureController {
 
     @PostMapping(value = "/payment")
     @Operation(summary = "Signing users ",
-            description = "Updates the user's password by passing a JSON representation of the user's old password and a new password and its confirmation.",
+            description = "Performs credit card payment for monthly subscribers.",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "204",

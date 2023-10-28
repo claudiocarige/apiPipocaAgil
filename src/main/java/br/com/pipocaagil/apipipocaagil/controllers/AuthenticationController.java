@@ -36,7 +36,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/auth")
     @Operation(summary = "Authenticate User",
-            description = "Authenticate a user by providing credentials with Username(e-mail) and password.",
+            description = "Authenticates a user by passing a JSON representation with email credentials and password.",
             tags = {"Authentication"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",

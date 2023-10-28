@@ -176,11 +176,11 @@ public class UsersController {
 
     @PutMapping(value = "/{id}")
     @Operation(summary = "Update a User",
-            description = "Updates a user by passing a JSON representation of the user to be added.",
+            description = "Updates the user's firstname, lastname, and birthday by passing a JSON representation of the user to be added",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsersRepresentation.class))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserUpdateRepresentation.class))
                     ),
                     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),

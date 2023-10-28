@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/password")
-@Tag(name = "Password", description = "Contains all operations related to the resources for reset, editing, deleting a Password.")
+@Tag(name = "Password", description = "Contains all operations related to the resources for reset and editing a Password.")
 public class PasswordUserController {
 
     private final PasswordUserService passwordUserService;
@@ -29,7 +29,7 @@ public class PasswordUserController {
 
     @PatchMapping(value = "/{id}")
     @Operation(summary = "Update your password ",
-            description = "Updates the user's password by passing a JSON representation of the user's old password and a new password and its confirmation.",
+            description = "Updates the user's password by passing a JSON representation of the user's old password, a new password and its confirmation.",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -50,9 +50,9 @@ public class PasswordUserController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/reset/{email}")
+    @PostMapping(value = "/recovery/{email}")
     @Operation(summary = "Reset your password ",
-            description = "Reset the user's password by passing a JSON representation of the user's old password and a new password and its confirmation.",
+            description = "Recovers the user's password by sending a new password to the registered e-mail.",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
