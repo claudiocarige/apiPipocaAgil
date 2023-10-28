@@ -1,8 +1,9 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.Users;
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserUpdateRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.impl.ContextCheckImpl;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.EmailSendingService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,15 +12,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -36,6 +35,7 @@ public class UsersController {
     private final UsersService userService;
     private final ModelMapper mapper;
     private final EmailSendingService emailSendingService;
+    private final ContextCheckImpl contextCheck;
 
     @GetMapping(value = "/{id}")
     @Operation(summary = "Find a User by id", description = "Find a User by Id",
@@ -166,7 +166,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation) {
+    public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation) throws MessagingException {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
         emailSendingService.sendOrderConfirmationEmail(usersRepresentation.getEmail(),
@@ -187,31 +187,11 @@ public class UsersController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<UsersRepresentation> update(@PathVariable Long id,
-                                                      @Valid @RequestBody UsersRepresentation usersRepresentation) {
-        checkUser(id);
+    public ResponseEntity<UserUpdateRepresentation> update(@PathVariable Long id,
+                                                      @Valid @RequestBody UserUpdateRepresentation usersRepresentation) {
+        contextCheck.checkUser(id);
         return ResponseEntity.ok().body(mapper.map(userService.update(id, usersRepresentation),
-                UsersRepresentation.class));
-    }
-
-    @PatchMapping(value = "/password/{id}")
-    @Operation(summary = "Update your password ",
-            description = "Updates the user's password by passing a JSON representation of the user's old password and a new password and its confirmation.",
-            tags = {"Users"},
-            responses = {
-                    @ApiResponse(description = "Success", responseCode = "204",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPasswordRepresentation.class))
-                    ),
-                    @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
-                    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
-            })
-    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordRepresentation pass) {
-        checkUser(id);
-        userService.updatePassword(id, pass);
-        return ResponseEntity.noContent().build();
+                UserUpdateRepresentation.class));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
