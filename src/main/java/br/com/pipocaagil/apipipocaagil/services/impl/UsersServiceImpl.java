@@ -3,19 +3,18 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserUpdateRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
-import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
-import org.springframework.transaction.annotation.Transactional;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,23 +77,12 @@ public class UsersServiceImpl implements UsersService {
     }
     @Transactional
     @Override
-    public Users update(Long id, UsersRepresentation usersRepresentation) {
-        usersRepresentation.setId(id);
-        Users user = findById(usersRepresentation.getId());
-        checkEmail(usersRepresentation, "update");
-        checkPassword(usersRepresentation, user);
-        usersRepresentation.setCreateDate(user.getCreateDate());
-        usersRepresentation.setRole(user.getRole().toString());
-        return userRepository.save(mapper.map(usersRepresentation, Users.class));
-    }
-
-    @Transactional
-    @Override
-    public void updatePassword(Long id, UserPasswordRepresentation pass){
-        checkPassword(id, pass);
+    public Users update(Long id, UserUpdateRepresentation usersRepresentation) {
         Users user = findById(id);
-        user.setPassword(passwordEncoder.encode(pass.getNewPassword()));
-        userRepository.save(user);
+        user.setFirstName(usersRepresentation.getFirstName());
+        user.setLastName(usersRepresentation.getLastName());
+        user.setBirthday(usersRepresentation.getBirthday());
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -139,16 +127,6 @@ public class UsersServiceImpl implements UsersService {
             usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         }else{
             usersRepresentation.setPassword(user.getPassword());
-        }
-    }
-
-    private void checkPassword(Long id, UserPasswordRepresentation pass){
-        Users user = findById(id);
-        if (!passwordEncoder.matches(pass.getOldPassword(), user.getPassword())){
-            throw new PasswordInvalidException("Old password is invalid!");
-        }
-        if (!pass.getNewPassword().equals(pass.getConfirmPassword())){
-            throw new PasswordInvalidException("New password and confirm password are different!");
         }
     }
 }
