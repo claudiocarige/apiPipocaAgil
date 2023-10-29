@@ -48,7 +48,7 @@ public class AuthenticationController {
             })
     public ResponseEntity<?> auth(@RequestBody @Valid UserLoginRepresentation userLoginRepresentation,
                                          HttpServletRequest request) {
-        log.info("Authentication process by EMAIL {}", userLoginRepresentation.getEmail());
+        log.info("Started authentication process by EMAIL {}", userLoginRepresentation.getEmail());
         Users user = new Users();
         user.setUsername(userLoginRepresentation.getEmail());
         user.setPassword(userLoginRepresentation.getPassword());

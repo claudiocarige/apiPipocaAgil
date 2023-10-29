@@ -12,11 +12,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/password")
@@ -42,6 +43,7 @@ public class PasswordUserController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<String> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordRepresentation pass) {
+        log.info("Started updating user password");
         contextCheck.checkUser(id);
         passwordUserService.updatePassword(id, pass);
         var message = "Password Changed Successfully";
@@ -65,11 +67,10 @@ public class PasswordUserController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<String> passwordRecovery(@PathVariable String email) throws MessagingException {
+        log.info("User Password Recovery Initiated");
         var password = passwordUserService.passwordRecovery(email);
         emailSendingService.sendEmail(email,
                 "Recuperação de senha!", password);
         return ResponseEntity.ok().body("Password sent to the E-mail!");
     }
-
-
 }

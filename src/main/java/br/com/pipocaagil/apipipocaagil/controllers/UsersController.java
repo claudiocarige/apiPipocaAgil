@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "api/v1/users")
 @RequiredArgsConstructor
@@ -51,6 +53,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<UsersRepresentation> findById(@PathVariable Long id) {
+        log.info("Searching for user by id {}", id);
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UsersRepresentation.class));
     }
 
@@ -68,6 +71,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<UsersRepresentation> findByUsername(@RequestParam("email") String email) {
+        log.info("Searching for user by email {}", email);
         return ResponseEntity.ok().body(mapper.map(userService.findByUsername(email), UsersRepresentation.class));
     }
 
@@ -88,6 +92,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<List<UsersRepresentation>> findAll() {
+        log.info("Searching for all users");
         return ResponseEntity.ok().body(toConvertCollection(userService.findAll()));
     }
 
@@ -108,6 +113,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<List<UsersRepresentation>> findByNameIgnoreCase(@RequestParam("firstname") String firstname) {
+        log.info("Searching for user by firstname {}", firstname);
         return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstname)));
     }
 
@@ -129,6 +135,7 @@ public class UsersController {
             })
     public ResponseEntity<List<UsersRepresentation>> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(@RequestParam("firstNamePart") String firstNamePart,
                                                                                                                        @RequestParam("lastNamePart") String lastNamePart) {
+        log.info("Searching for user by firstname {} and lastname {}", firstNamePart, lastNamePart);
         return ResponseEntity.ok().body(toConvertCollection(userService.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(firstNamePart, lastNamePart)));
     }
 
@@ -151,6 +158,7 @@ public class UsersController {
     public ResponseEntity<List<UsersRepresentation>> findByBirthdayBetween(
             @RequestParam("startDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
+        log.info("Searching for user by birthday between {} and {}", startDate, endDate);
         return ResponseEntity.ok().body(toConvertCollection(userService.findByBirthdayBetween(startDate, endDate)));
     }
 
@@ -167,6 +175,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<UsersRepresentation> insert(@Valid @RequestBody UsersRepresentation usersRepresentation) throws MessagingException {
+        log.info("Started a new user registration");
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
         emailSendingService.sendEmail(usersRepresentation.getEmail(),
@@ -189,6 +198,7 @@ public class UsersController {
             })
     public ResponseEntity<UserUpdateRepresentation> update(@PathVariable Long id,
                                                       @Valid @RequestBody UserUpdateRepresentation usersRepresentation) {
+        log.info("Started updating user");
         contextCheck.checkUser(id);
         return ResponseEntity.ok().body(mapper.map(userService.update(id, usersRepresentation),
                 UserUpdateRepresentation.class));
@@ -207,6 +217,7 @@ public class UsersController {
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
     public ResponseEntity<UsersRepresentation> delete(@PathVariable Long id) {
+        log.info("Started deleting user by id {}", id);
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }

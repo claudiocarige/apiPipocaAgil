@@ -50,8 +50,8 @@ public class EmailSendingServiceImpl implements EmailSendingService {
 
                 javaMailSender.send(message);
             } catch(MessagingException e){
-                log.error("Erro ao enviar o e-mail: " + e.getMessage());
-                throw new MessagingException("Erro ao enviar e-mail: ", e);
+                log.error("Error sending the email: " + e.getMessage());
+                throw new MessagingException("Error sending the email: ", e);
             }
         }
     }

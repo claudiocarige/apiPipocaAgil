@@ -51,18 +51,16 @@ public class UsersSignatureController {
             })
     public ResponseEntity<?> signatureToUser(
                  @RequestBody @Valid CardDetailsRepresentation cardDetailsRepresentation, HttpServletRequest request) {
-
         UserLoginRepresentation userLoginRepresentation = contextCheck.checkUser();
+        log.info("Started user subscription for the email : {}", userLoginRepresentation.getEmail());
         if (!checkCard(cardDetailsRepresentation)){
-            log.info("Unauthorized Card!");
+            log.warn("Unauthorized Card!");
             throw new PaymentAuthorizationException("Unauthorized Card!");
         }
-        log.info("User {} is trying to sign up", userLoginRepresentation.getEmail());
         signatureService.signatureToUser(userLoginRepresentation, UserPermissionType.ROLE_SIGNED);
         JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getEmail());
         return ResponseEntity.ok(token);
     }
-
 
     private static boolean checkCard(CardDetailsRepresentation cardDetailsRepresentation){
         var cardNumber = "4929857104078491";

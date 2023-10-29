@@ -4,6 +4,7 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolatio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class ControlerExceptionHandler {
 
@@ -20,6 +22,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> objectNotFound(NoSuchElementException ex, HttpServletRequest request){
         StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(), request.getRequestURI());
+        log.error("NoSuchElementException - Object not found. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
@@ -27,6 +30,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> dataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
         StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(), request.getRequestURI());
+        log.error("DataIntegrityViolationException - Data Integrity Violation. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
 
@@ -38,6 +42,7 @@ public class ControlerExceptionHandler {
         for (FieldError x : ex.getBindingResult().getFieldErrors()) {
             error.addError(x.getField(), x.getDefaultMessage());
         }
+        log.error("MethodArgumentNotValidException - Error in the validation of the fields. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -50,6 +55,7 @@ public class ControlerExceptionHandler {
         }
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
                 String.format("Wrong Json attribute in : %s", value), request.getRequestURI());
+        log.error("HttpMessageNotReadableException - Wrong Json attribute. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -57,6 +63,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> accessDeniedException (AccessDeniedException  ex, HttpServletRequest request){
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage(), request.getRequestURI());
+        log.error("AccessDeniedException - Access denied. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
@@ -64,6 +71,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> passwordInvalidException(PasswordInvalidException ex, HttpServletRequest request){
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(), request.getRequestURI());
+        log.error("PasswordInvalidException - Password Invalid. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -71,6 +79,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> paymentAuthorizationException(PaymentAuthorizationException ex, HttpServletRequest request){
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage(), request.getRequestURI());
+        log.error("PaymentAuthorizationException - Payment Authorization. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
