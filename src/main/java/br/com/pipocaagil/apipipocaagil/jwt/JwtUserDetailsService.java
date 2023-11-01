@@ -14,15 +14,16 @@ import org.springframework.stereotype.Service;
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final UsersService usuarioService;
+    private final JwtUtils jwtUtils;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users usuario = usuarioService.findByUsername(username);
-        return new JwtUserDetails(usuario);
+        Users user = usuarioService.findByUsername(username);
+        return new JwtUserDetails(user);
     }
 
     public JwtToken getTokenAuthenticated(String username) {
         UserPermissionType role = usuarioService.findByRoleFromUsername(username);
-        return JwtUtils.createToken(username, role.name().substring("ROLE_".length()));
+        return jwtUtils.createToken(username, role.name().substring("ROLE_".length()));
     }
 }

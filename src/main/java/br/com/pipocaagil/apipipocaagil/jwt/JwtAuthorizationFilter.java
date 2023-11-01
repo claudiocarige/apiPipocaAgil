@@ -20,6 +20,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUserDetailsService detailsService;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -31,13 +34,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!JwtUtils.isTokenValid(token)) {
+        if (!jwtUtils.isTokenValid(token)) {
             log.warn("JWT Token is invalid or expired.");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String username = JwtUtils.getUsernameFromToken(token);
+        String username = jwtUtils.getUsernameFromToken(token);
 
         toAuthentication(request, username);
 
