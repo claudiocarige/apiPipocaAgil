@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,13 +49,8 @@ public class ControlerExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<StandardError> jsonError(HttpMessageNotReadableException ex,HttpServletRequest request){
-        var startIndex = ex.getMessage().indexOf("String");
-        var value = "";
-        if (startIndex != -1) {
-            value = ex.getMessage().substring(ex.getMessage().indexOf("\"", startIndex));
-        }
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
-                String.format("Wrong Json attribute in : %s", value), request.getRequestURI());
+                "There is an error in the Json of the request body!", request.getRequestURI());
         log.error("HttpMessageNotReadableException - Wrong Json attribute. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -82,4 +78,13 @@ public class ControlerExceptionHandler {
         log.error("PaymentAuthorizationException - Payment Authorization. {} ", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<StandardError> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request){
+        StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.METHOD_NOT_ALLOWED.value(),
+                "Request method 'POST' is not supported. Verify the endpoint!", request.getRequestURI());
+        log.error("HttpRequestMethodNotSupportedException - Method not supported. {} ", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
+
 }
