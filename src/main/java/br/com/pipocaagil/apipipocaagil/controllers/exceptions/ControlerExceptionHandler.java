@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers.exceptions;
 
+import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
@@ -87,4 +88,11 @@ public class ControlerExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
     }
 
+    @ExceptionHandler(JsonProcessingException.class)
+    public ResponseEntity<StandardError> jsonProcessingException(JsonProcessingException ex, HttpServletRequest request){
+        StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(), request.getRequestURI());
+        log.error("Error in object deserialization.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }

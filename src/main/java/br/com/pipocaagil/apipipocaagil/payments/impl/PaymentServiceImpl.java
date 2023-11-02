@@ -28,7 +28,7 @@ import static br.com.pipocaagil.apipipocaagil.services.FormatDate.formatStringTo
 public class PaymentServiceImpl implements PaymentService {
 
     @Value("${pagseguro.token}")
-    private String PAGBANK_CHAVE;
+    private String pagBank;
 
     private static final String PAGBANK_URL = "https://sandbox.api.pagseguro.com/orders";
 
@@ -43,7 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Object createPayment(OrderRepresentation order) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/json"));
-        headers.set("Authorization", "Bearer " + PAGBANK_CHAVE);
+        headers.set("Authorization", "Bearer " + pagBank);
         headers.set("accept", "application/json");
 
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
@@ -82,7 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
             log.info("Dados do Json :" + " orderId :" + signatureData.getOrderId() + " referenceId: " + signatureData.getReferenceId() + " charId: " + signatureData.getCharId() + " charStatus: " + signatureData.getStatus() + " paidAt: " + signatureData.getPaidAt() + "Assinatura"+ signatureData.getSignatureType() + "Expiração : " + signatureData.getExpirationAt());
             return signatureData;
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error in object deserialization : ", e);
+            throw new br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException("Error in object deserialization : "+ e);
         }
     }
 }
