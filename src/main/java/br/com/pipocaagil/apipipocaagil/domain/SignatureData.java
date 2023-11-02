@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.domain;
 
+import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,13 +25,17 @@ public class SignatureData {
     private String charId;
     private String orderId;
     private String status;
-    private String customer;
+    private String referenceId;
     private String paymentMethod;
-    private String signatureType;
+    private SignatureType signatureType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime paidAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime expirationAt;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Users user;
+
 }
