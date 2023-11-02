@@ -14,8 +14,7 @@ import java.util.List;
 public class OrderRepresentation {
 
     private CustomerRepresentation customer;
-    private ShippingRepresentation shipping;
-    private String reference_id;
     private List<ItemsRepresentation> items;
+    private String reference_id;
     private List<ChargeRepresentation> charges;
 }
