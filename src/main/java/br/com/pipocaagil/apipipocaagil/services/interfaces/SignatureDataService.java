@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface SignatureDataService {
 
-    SignatureData save(SignatureData signatureData);
+    void save(SignatureData signatureData);
     Optional<SignatureData> findById(Long id);
     List<SignatureData> findAll();
 }
