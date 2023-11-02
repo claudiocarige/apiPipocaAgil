@@ -4,5 +4,5 @@ import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentat
 
 public interface PaymentService {
 
-    Object createPayment(OrderRepresentation order);
+    Object createPayment(OrderRepresentation order) throws Exception;
 }

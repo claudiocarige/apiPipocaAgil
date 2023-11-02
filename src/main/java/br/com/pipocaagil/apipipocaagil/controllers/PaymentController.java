@@ -20,7 +20,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/card")
-    public ResponseEntity<Object>createPayment(@RequestBody OrderRepresentation order){
+    public ResponseEntity<Object>createPayment(@RequestBody OrderRepresentation order) throws Exception {
         var payment = paymentService.createPayment(order);
         log.info("Payment created: {}", payment);
         return ResponseEntity.ok(payment);
