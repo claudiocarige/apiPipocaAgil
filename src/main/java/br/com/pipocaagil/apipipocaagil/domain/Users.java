@@ -37,9 +37,6 @@ public class Users {
     private LocalDate createDate;
     @Enumerated(EnumType.STRING)
     private UserPermissionType role;
-    @OneToOne
-    @JoinColumn(name = "signature_data_id", referencedColumnName = "id")
-    private SignatureData signatureData;
 
     @Override
     public boolean equals(Object o) {
