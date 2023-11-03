@@ -1,6 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.payments.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
 import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
@@ -12,11 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static br.com.pipocaagil.apipipocaagil.services.FormatDate.formatStringToLocalDateTime;
@@ -45,16 +44,20 @@ public class PaymentServiceImpl implements PaymentService {
         headers.setContentType(MediaType.valueOf("application/json"));
         headers.set("Authorization", "Bearer " + pagBank);
         headers.set("accept", "application/json");
-
+        Users user = usersService.findByUsername(order.getCustomer().getEmail());
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
-
-        var response = restTemplate.exchange(PAGBANK_URL, HttpMethod.POST, entity, Object.class);
+        ResponseEntity<Object> response;
+        try{
+            response = restTemplate.exchange(PAGBANK_URL, HttpMethod.POST, entity, Object.class);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException(e);
+        }
         var bodyResponse = response.getBody();
-        saveResultInDB(bodyResponse, order.getCustomer().getEmail());
+        saveResultInDB(bodyResponse, user);
         return bodyResponse;
     }
 
-    public void saveResultInDB(Object bodyResponse, String userEmail) throws JsonProcessingException{
+    public void saveResultInDB(Object bodyResponse, Users user) throws JsonProcessingException{
         String json;
         try {
             json = objectMapper.writeValueAsString(bodyResponse);
@@ -62,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new JsonProcessingException("Error in object deserialization : "+ e);
         }
         SignatureData signatureData = desserializeJson(json);
-        signatureData.setUser(usersService.findByUsername(userEmail));
+        signatureData.setUser(user);
 
         signatureDataService.save(signatureData);
     }
