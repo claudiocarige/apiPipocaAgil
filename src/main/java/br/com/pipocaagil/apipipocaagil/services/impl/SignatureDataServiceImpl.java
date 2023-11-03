@@ -19,8 +19,8 @@ public class SignatureDataServiceImpl implements SignatureDataService {
     private final SignatureDataRepository signatureDataRepository;
     @Transactional
     public void save(SignatureData signatureData) {
-        var result = signatureDataRepository.save(signatureData);
-        log.info("SignatureData saved: {}", result);
+        signatureDataRepository.save(signatureData);
+        log.info("SignatureData saved.");
     }
 
     @Override
