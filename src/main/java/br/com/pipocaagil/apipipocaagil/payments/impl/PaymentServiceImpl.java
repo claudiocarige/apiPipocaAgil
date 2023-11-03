@@ -2,11 +2,11 @@ package br.com.pipocaagil.apipipocaagil.payments.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
+import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,12 +54,12 @@ public class PaymentServiceImpl implements PaymentService {
         return bodyResponse;
     }
 
-    public void saveResultInDB(Object bodyResponse, String userEmail) {
+    public void saveResultInDB(Object bodyResponse, String userEmail) throws JsonProcessingException{
         String json;
         try {
             json = objectMapper.writeValueAsString(bodyResponse);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting object to Json. ", e);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new JsonProcessingException("Error in object deserialization : "+ e);
         }
         SignatureData signatureData = desserializeJson(json);
         signatureData.setUser(usersService.findByUsername(userEmail));
@@ -67,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
         signatureDataService.save(signatureData);
     }
 
-    private SignatureData desserializeJson(String json) {
+    private SignatureData desserializeJson(String json)  throws JsonProcessingException{
         SignatureData signatureData = new SignatureData();
         try {
             JsonNode rootNode = objectMapper.readTree(json);
@@ -81,8 +81,8 @@ public class PaymentServiceImpl implements PaymentService {
             signatureData.setExpirationAt(signatureData.getPaidAt().plusMonths(12));
             log.info("Dados do Json :" + " orderId :" + signatureData.getOrderId() + " referenceId: " + signatureData.getReferenceId() + " charId: " + signatureData.getCharId() + " charStatus: " + signatureData.getStatus() + " paidAt: " + signatureData.getPaidAt() + "Assinatura"+ signatureData.getSignatureType() + "Expiração : " + signatureData.getExpirationAt());
             return signatureData;
-        } catch (JsonProcessingException e) {
-            throw new br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException("Error in object deserialization : "+ e);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new JsonProcessingException("Error in object deserialization : "+ e);
         }
     }
 }

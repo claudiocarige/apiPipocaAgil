@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
+import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/card")
-    public ResponseEntity<Object>createPayment(@RequestBody OrderRepresentation order) throws Exception {
+    public ResponseEntity<Object>createPayment(@RequestBody OrderRepresentation order) throws JsonProcessingException {
         var payment = paymentService.createPayment(order);
         log.info("Payment created: {}", payment);
         return ResponseEntity.ok(payment);
