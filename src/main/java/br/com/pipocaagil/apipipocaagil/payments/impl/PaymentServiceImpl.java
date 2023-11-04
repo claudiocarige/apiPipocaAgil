@@ -29,7 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${pagseguro.token}")
     private String pagBank;
 
-    private static final String PAGBANK_URL = "https://sandbox.api.pagseguro.com/orders";
+    private static final String PAGBANK_URL = "https://sandbox.api.pagseguro.com";
 
     private final RestTemplate restTemplate;
 
@@ -40,37 +40,59 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Object createPayment(OrderRepresentation order) {
-        var headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf("application/json"));
-        headers.set("Authorization", "Bearer " + pagBank);
-        headers.set("accept", "application/json");
+        var headers = createHeader();
         Users user = usersService.findByUsername(order.getCustomer().getEmail());
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
-        ResponseEntity<Object> response;
-        try{
-            response = restTemplate.exchange(PAGBANK_URL, HttpMethod.POST, entity, Object.class);
-        } catch (HttpClientErrorException e) {
-            throw new RuntimeException(e);
-        }
+        var response = sendPaymentRequest(entity);
         var bodyResponse = response.getBody();
         saveResultInDB(bodyResponse, user);
         return bodyResponse;
     }
 
-    public void saveResultInDB(Object bodyResponse, Users user) throws JsonProcessingException{
+    private HttpHeaders createHeader() {
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf("application/json"));
+        headers.set("Authorization", "Bearer " + pagBank);
+        headers.set("accept", "application/json");
+        return headers;
+    }
+
+    private ResponseEntity<Object> sendPaymentRequest(HttpEntity<Object> entity) {
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(PAGBANK_URL+"/orders", HttpMethod.POST, entity, Object.class);
+            var statusCode = response.getStatusCode().value();
+            if (statusCode < 200 || statusCode > 204) {
+                log.warn("Payment not authorized ; " + response.getStatusCode() + response);
+                return ResponseEntity.badRequest().body(new JsonProcessingException("Payment not authorized"));
+            }
+            return response;
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveResultInDB(Object bodyResponse, Users user) throws JsonProcessingException {
+        var json = convertBodyResponseToJson(bodyResponse);
+        SignatureData signatureData = desserializeJson(json);
+        if (!signatureData.getStatus().equals("PAID")) {
+            log.warn("Payment not authorized"+ bodyResponse);
+            throw new RuntimeException("Payment not authorized");
+        }
+        signatureData.setUser(user);
+        signatureDataService.save(signatureData);
+    }
+
+    private String convertBodyResponseToJson(Object bodyResponse){
         String json;
         try {
             json = objectMapper.writeValueAsString(bodyResponse);
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            throw new JsonProcessingException("Error in object deserialization : "+ e);
+            throw new JsonProcessingException("Error in object deserialization : " + e);
         }
-        SignatureData signatureData = desserializeJson(json);
-        signatureData.setUser(user);
-
-        signatureDataService.save(signatureData);
+        return json;
     }
 
-    private SignatureData desserializeJson(String json)  throws JsonProcessingException{
+    private SignatureData desserializeJson(String json) throws JsonProcessingException {
         SignatureData signatureData = new SignatureData();
         try {
             JsonNode rootNode = objectMapper.readTree(json);
@@ -79,13 +101,12 @@ public class PaymentServiceImpl implements PaymentService {
             signatureData.setStatus(rootNode.at("/charges/0/status").asText());
             signatureData.setReferenceId(rootNode.at("/reference_id").asText());
             signatureData.setPaymentMethod(rootNode.at("/charges/0/payment_method/type").asText());
-            signatureData.setSignatureType(rootNode.at("/items/0/name").asText().equals("Assinatura") ? SignatureType.STANDARD : SignatureType.PREMIUM);
+            signatureData.setSignatureType(rootNode.at("/items/0/name").asText().equals("STANDARD") ? SignatureType.STANDARD : SignatureType.PREMIUM);
             signatureData.setPaidAt(formatStringToLocalDateTime(rootNode.at("/charges/0/paid_at").asText()));
             signatureData.setExpirationAt(signatureData.getPaidAt().plusMonths(12));
-            log.info("Dados do Json :" + " orderId :" + signatureData.getOrderId() + " referenceId: " + signatureData.getReferenceId() + " charId: " + signatureData.getCharId() + " charStatus: " + signatureData.getStatus() + " paidAt: " + signatureData.getPaidAt() + "Assinatura"+ signatureData.getSignatureType() + "Expiração : " + signatureData.getExpirationAt());
             return signatureData;
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            throw new JsonProcessingException("Error in object deserialization : "+ e);
+            throw new JsonProcessingException("Error in object deserialization : " + e);
         }
     }
 }
