@@ -1,16 +1,14 @@
 package br.com.pipocaagil.apipipocaagil.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Profile("test")
-@RequiredArgsConstructor
-public class TestConfig {
+public class AppConfig {
 
     @Bean
-    public void startDB() {
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
 }
