@@ -27,6 +27,7 @@ public class SignatureData {
     private String status;
     private String referenceId;
     private String paymentMethod;
+    @Enumerated(EnumType.STRING)
     private SignatureType signatureType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -37,5 +38,4 @@ public class SignatureData {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users user;
-
 }
