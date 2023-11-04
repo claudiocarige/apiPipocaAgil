@@ -47,11 +47,12 @@ public class PaymentController {
         return ResponseEntity.ok(payment);
     }
 
-    @PostMapping("/result")
+    @PostMapping("/result/response")
     @Operation(summary = "Receive Payment Update Response",
             description = "Receive Payment Update Response.",
             tags = {"Signature"})
-    public void paymentResponse(@RequestBody Object bodyResponse){
+    public String paymentResponse(@RequestBody Object bodyResponse){
         log.info("Payment : "+ bodyResponse);
+        return "Ok";
     }
 }
