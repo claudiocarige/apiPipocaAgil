@@ -52,7 +52,7 @@ public class PasswordUserController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/recovery/{email}")
+    @GetMapping(value = "/recovery/{email}")
     @Operation(summary = "Reset your password ",
             description = "Recovers the user's password by sending a new password to the registered e-mail.",
             tags = {"Users"},
