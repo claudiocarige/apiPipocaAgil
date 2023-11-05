@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipoca Ágil</title>
+    <style>
+        .container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        .button {
+            background-color: yellow;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        ul{
+            text-align: left;
+        }
+        li{
+            font-size: 1.1rem;
+        }
+        span{
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Bem-vindo ao Pipoa Ágil</h1>
+    </div>
+    <div class="content">
+        <p>Olá <span th:text="${data}"></span>,</p>
+        <p>Bem-vindo ao Pipoa Ágil! </p>
+        <p>Estamos entusiasmados por você se juntar à nossa comunidade de entusiastas de tecnologia. No Pipoa Ágil, acreditamos que o conhecimento tecnológico é a chave para o sucesso no mundo digital em constante evolução.</p>
+        <p>Aqui está o que você pode esperar do Pipoa Ágil:</p>
+        <ul>
+            <li>Podcasts Informativos: Apresentamos uma variedade de podcasts semanais que cobrem as tendências tecnológicas mais recentes, dicas práticas, entrevistas com especialistas do setor e muito mais.</li>
+            <li>Comunidade Engajada: Junte-se a uma comunidade de entusiastas de tecnologia, onde você pode discutir tópicos relevantes, fazer perguntas e compartilhar seus insights.</li>
+            <li>Recursos Exclusivos: Tenha acesso a conteúdos exclusivos, artigos, e-books e recursos para aprimorar ainda mais seus conhecimentos tecnológicos.</li>
+            <li>Notícias Atualizadas: Mantenha-se informado sobre as notícias mais recentes do mundo da tecnologia e inovação.</li>
+            <li>Eventos Especiais: Fique atento a eventos ao vivo, webinars e workshops para interagir diretamente com especialistas da indústria.</li>
+        </ul>
+        <p>Estamos ansiosos para compartilhar nossa paixão por tecnologia com você e apoiá-lo em sua jornada de aprendizado. Se você tiver alguma pergunta ou precisar de assistência, nossa equipe está à disposição para ajudar.</p>
+        <p>Acesse o Pipoa Ágil hoje e comece a explorar nosso conteúdo exclusivo em <a class="button" href="https://site-pipoca-rust.vercel.app/">Acessar o Pipoa Ágil</a>.</p>
+        <p>Obrigado por se juntar à nossa comunidade. Esperamos inspirar você a conquistar grandes realizações no mundo da tecnologia.</p>
+        <p>Atenciosamente,<br>A Equipe do Pipoa Ágil</p>
+    </div>
+</div>
+</body>
+</html>
