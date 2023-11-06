@@ -30,7 +30,7 @@ public class EmailSendingServiceImpl implements EmailSendingService {
             helper.setSubject(subject);
             var emailContent = createEmailBody(toEmail, subject, data);
             helper.setText(emailContent, true);
-            javaMailSender.send(message);
+            javaMailSender.send(helper.getMimeMessage());
         } catch (MessagingException e) {
             log.error("Error sending the email: " + e.getMessage());
             throw new MessagingException("Error sending the email: ", e);
