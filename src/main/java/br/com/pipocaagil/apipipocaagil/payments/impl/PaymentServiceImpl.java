@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.payments.impl;
 
+import br.com.pipocaagil.apipipocaagil.controllers.exceptions.PaymentAuthorizationException;
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
@@ -26,17 +27,17 @@ import static br.com.pipocaagil.apipipocaagil.services.FormatDate.formatStringTo
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    @Value("${pagseguro.token}")
-    private String pagBank;
-
+    public static final String PAYMENT_NOT_AUTHORIZED = "Payment not authorized!";
+    public static final String ERROR_IN_OBJECT_DESERIALIZATION = "Error in object deserialization : ";
     private static final String PAGBANK_URL = "https://sandbox.api.pagseguro.com";
 
     private final RestTemplate restTemplate;
-
     private final ObjectMapper objectMapper;
-
     private final SignatureDataService signatureDataService;
     private final UsersService usersService;
+
+    @Value("${pagseguro.token}")
+    private String pagBank;
 
     @Override
     public Object createPayment(OrderRepresentation order) {
@@ -62,8 +63,8 @@ public class PaymentServiceImpl implements PaymentService {
             ResponseEntity<Object> response = restTemplate.exchange(PAGBANK_URL+"/orders", HttpMethod.POST, entity, Object.class);
             var statusCode = response.getStatusCode().value();
             if (statusCode < 200 || statusCode > 204) {
-                log.warn("Payment not authorized ; " + response.getStatusCode() + response);
-                return ResponseEntity.badRequest().body(new JsonProcessingException("Payment not authorized"));
+                log.warn(PAYMENT_NOT_AUTHORIZED + ";" + response.getStatusCode() + response);
+                return ResponseEntity.badRequest().body(new PaymentAuthorizationException(PAYMENT_NOT_AUTHORIZED));
             }
             return response;
         } catch (HttpClientErrorException e) {
@@ -75,8 +76,8 @@ public class PaymentServiceImpl implements PaymentService {
         var json = convertBodyResponseToJson(bodyResponse);
         SignatureData signatureData = desserializeJson(json);
         if (!signatureData.getStatus().equals("PAID")) {
-            log.warn("Payment not authorized"+ bodyResponse);
-            throw new RuntimeException("Payment not authorized");
+            log.warn(PAYMENT_NOT_AUTHORIZED + bodyResponse);
+            throw new PaymentAuthorizationException(PAYMENT_NOT_AUTHORIZED);
         }
         signatureData.setUser(user);
         signatureDataService.save(signatureData);
@@ -87,7 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             json = objectMapper.writeValueAsString(bodyResponse);
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            throw new JsonProcessingException("Error in object deserialization : " + e);
+            throw new JsonProcessingException(ERROR_IN_OBJECT_DESERIALIZATION + e);
         }
         return json;
     }
@@ -106,7 +107,7 @@ public class PaymentServiceImpl implements PaymentService {
             signatureData.setExpirationAt(signatureData.getPaidAt().plusMonths(12));
             return signatureData;
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            throw new JsonProcessingException("Error in object deserialization : " + e);
+            throw new JsonProcessingException(ERROR_IN_OBJECT_DESERIALIZATION + e);
         }
     }
 }
