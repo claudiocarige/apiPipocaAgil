@@ -10,7 +10,6 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolatio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
@@ -119,14 +118,6 @@ public class UsersServiceImpl implements UsersService {
             usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
         }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN.name())){
             usersRepresentation.setRole(usersRepresentation.getRole());
-        }
-    }
-
-    private void checkPassword(UsersRepresentation usersRepresentation, Users user){
-        if (!passwordEncoder.matches(usersRepresentation.getPassword(), user.getPassword())){
-            usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
-        }else{
-            usersRepresentation.setPassword(user.getPassword());
         }
     }
 }
