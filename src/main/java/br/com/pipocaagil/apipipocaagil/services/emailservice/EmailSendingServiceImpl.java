@@ -50,6 +50,10 @@ public class EmailSendingServiceImpl implements EmailSendingService {
             context.setVariable("name", usersService.findByUsername(email).getFirstName());
             context.setVariable("data", data);
             emailContent = templateEngine.process("emails/reset-password.html", context);
+        } else if (subject.equals("Você conseguiu sua Assinatura Pipoca Ágil!")) {
+            log.info("Congratulations Email Creation for Subscription!");
+            context.setVariable("name", usersService.findByUsername(email).getFirstName());
+            emailContent = templateEngine.process("emails/congratulations.html", context);
         }
         return emailContent;
     }
