@@ -1,7 +1,10 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.repositories.SignatureDataRepository;
+import br.com.pipocaagil.apipipocaagil.services.FormatDate;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,19 +20,26 @@ import java.util.Optional;
 public class SignatureDataServiceImpl implements SignatureDataService {
 
     private final SignatureDataRepository signatureDataRepository;
+
     @Transactional
     public void save(SignatureData signatureData) {
         signatureDataRepository.save(signatureData);
+        var UserId = signatureData.getUser().getId();
         log.info("SignatureData saved.");
     }
 
     @Override
-    public Optional<SignatureData> findById(Long id) {
-        return Optional.empty();
+    public SignatureData findSignatureByUserId(Long id) {
+        Optional<SignatureData> signatureData = signatureDataRepository.findSignatureByUserId(id);
+        return signatureData.orElseThrow(() -> new NoSuchElementException("Signature not found!"));
     }
 
     @Override
-    public List<SignatureData> findAll() {
-        return null;
+    public List<Users> findUsersWithSignature() {
+        return signatureDataRepository.findUsersWithSignature();
+    }
+
+    public Long countUsersSignature() {
+        return signatureDataRepository.countUsersSignature();
     }
 }
