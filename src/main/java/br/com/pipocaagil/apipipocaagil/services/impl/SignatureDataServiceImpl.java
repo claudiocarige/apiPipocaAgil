@@ -3,7 +3,6 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.repositories.SignatureDataRepository;
-import br.com.pipocaagil.apipipocaagil.services.FormatDate;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class SignatureDataServiceImpl implements SignatureDataService {
     @Transactional
     public void save(SignatureData signatureData) {
         signatureDataRepository.save(signatureData);
-        var UserId = signatureData.getUser().getId();
         log.info("SignatureData saved.");
     }
 
