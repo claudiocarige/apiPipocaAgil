@@ -20,8 +20,4 @@ public class UsersSignatureServiceImpl implements UsersSignatureService {
         userService.updateRoleToSigned(UserPermissionType.ROLE_SIGNED, id);
         log.info("User has been changed to subscriber");
     }
-
-    public void toPayment(){
-        log.info("Payment");
-    }
 }
