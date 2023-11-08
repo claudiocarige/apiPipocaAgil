@@ -53,8 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private String generateReferenceId() {
         var counted = signatureDataService.countUsersSignature() + 1;
-        String referenceId = String.format("%08d", counted);
-        return referenceId;
+        return  String.format("%08d", counted);
     }
 
     private HttpHeaders createHeader() {
