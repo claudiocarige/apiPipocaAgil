@@ -43,11 +43,18 @@ public class PaymentServiceImpl implements PaymentService {
     public Object createPayment(OrderRepresentation order) {
         var headers = createHeader();
         Users user = usersService.findByUsername(order.getCustomer().getEmail());
+        order.setReference_id(generateReferenceId());
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
         var response = sendPaymentRequest(entity);
         var bodyResponse = response.getBody();
         saveResultInDB(bodyResponse, user);
         return bodyResponse;
+    }
+
+    private String generateReferenceId() {
+        var counted = signatureDataService.countUsersSignature() + 1;
+        String referenceId = String.format("%08d", counted);
+        return referenceId;
     }
 
     private HttpHeaders createHeader() {
