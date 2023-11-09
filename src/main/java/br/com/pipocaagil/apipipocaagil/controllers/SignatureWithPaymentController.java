@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
+import br.com.pipocaagil.apipipocaagil.domain.representations.CountRepresentation;
 import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
@@ -37,10 +38,9 @@ public class SignatureWithPaymentController {
             description = "Performs credit card payment for monthly subscribers.",
             tags = {"Signature"},
             responses = {
-                    @ApiResponse(description = "Success", responseCode = "204",
+                    @ApiResponse(description = "Create", responseCode = "201",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderRepresentation.class))
                     ),
-                    @ApiResponse(responseCode = "201", description = "Create", content = @Content),
                     @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
                     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -67,7 +67,8 @@ public class SignatureWithPaymentController {
     }
 
     @GetMapping("/counter")
-    public Long countUsersSignature(){
-        return signatureDataService.countUsersSignature();
+    public ResponseEntity<Object> countUsersSignature(){
+        CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
+        return ResponseEntity.ok().body(count);
     }
 }
