@@ -68,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation, "insert");
-        cheCkRole(usersRepresentation);
+        usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
         usersRepresentation.setCreateDate(LocalDate.now());
         usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
@@ -109,14 +109,6 @@ public class UsersServiceImpl implements UsersService {
             if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getEmail())) {
                 throw new DataIntegrityViolationException("Email cannot be changed.");
             }
-        }
-    }
-
-    private void cheCkRole(UsersRepresentation usersRepresentation){
-        if (usersRepresentation.getRole() == null) {
-            usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
-        }else if(usersRepresentation.getRole().equals(UserPermissionType.ROLE_ADMIN.name())){
-            usersRepresentation.setRole(usersRepresentation.getRole());
         }
     }
 }
