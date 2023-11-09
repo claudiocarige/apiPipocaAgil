@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
+import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
@@ -15,9 +16,12 @@ public class UsersSignatureServiceImpl implements UsersSignatureService {
     private final UsersService userService;
 
     @Override
-    public void signatureToUser(String email){
-        var id = userService.findByUsername(email).getId();
-        userService.updateRoleToSigned(UserPermissionType.ROLE_SIGNED, id);
-        log.info("User has been changed to subscriber");
+    public void signatureToUser(String email) {
+        Users user = userService.findByUsername(email);
+        if (!user.getRole().equals(UserPermissionType.ROLE_ADMIN)) {
+            userService.updateRoleToSigned(UserPermissionType.ROLE_SIGNED, user.getId());
+            log.info("User has been changed to subscriber");
+        }
+        log.info("User hasn't been changed to subscriber");
     }
 }
