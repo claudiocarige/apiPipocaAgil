@@ -11,7 +11,7 @@ public class FormatDate {
         try {
             return OffsetDateTime.parse(data, formatter);
         }catch (DateTimeParseException e) {
-            throw new RuntimeException("Error converting String to LocalDateTime. ", e);
+            throw new RuntimeException("Error converting String to OffsetDateTime. ", e);
         }
     }
 }
