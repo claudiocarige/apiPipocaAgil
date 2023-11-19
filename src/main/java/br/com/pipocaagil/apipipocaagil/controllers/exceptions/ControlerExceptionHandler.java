@@ -1,5 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers.exceptions;
 
+import br.com.pipocaagil.apipipocaagil.payments.exception.HttpClientErrorException;
 import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
@@ -15,7 +16,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.HttpClientErrorException;
+
 
 @Slf4j
 @ControllerAdvice
@@ -101,7 +102,7 @@ public class ControlerExceptionHandler {
     public ResponseEntity<StandardError> httpClientErrorException(HttpClientErrorException ex, HttpServletRequest request){
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
                 extractErrorDescription(ex.getMessage()), request.getRequestURI());
-        log.error("Wrong values in JSON  --  " + ex.getMessage());
+        log.error("Exception - HttpClientErrorException  --  " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
