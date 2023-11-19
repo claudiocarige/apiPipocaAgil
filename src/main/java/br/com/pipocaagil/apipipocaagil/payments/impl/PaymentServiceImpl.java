@@ -74,13 +74,13 @@ public class PaymentServiceImpl implements PaymentService {
             }
             return response;
         } catch (HttpClientErrorException e) {
-            throw new RuntimeException(e);
+            throw new br.com.pipocaagil.apipipocaagil.payments.exception.HttpClientErrorException("Verifique as informações do pagamento");
         }
     }
 
     public void saveResultInDB(Object bodyResponse, Users user) throws JsonProcessingException {
         var json = convertBodyResponseToJson(bodyResponse);
-        SignatureData signatureData = desserializeJson(json);
+        SignatureData signatureData = deserializeJson(json);
         if (!signatureData.getStatus().equals("PAID")) {
             log.warn(PAYMENT_NOT_AUTHORIZED + bodyResponse);
             throw new PaymentAuthorizationException(PAYMENT_NOT_AUTHORIZED);
@@ -99,7 +99,7 @@ public class PaymentServiceImpl implements PaymentService {
         return json;
     }
 
-    private SignatureData desserializeJson(String json) throws JsonProcessingException {
+    private SignatureData deserializeJson(String json) throws JsonProcessingException {
         SignatureData signatureData = new SignatureData();
         try {
             JsonNode rootNode = objectMapper.readTree(json);
