@@ -67,7 +67,7 @@ public class SignatureWithPaymentController {
     }
 
     @GetMapping("/counter")
-    public ResponseEntity<Object> countUsersSignature(){
+    public ResponseEntity<CountRepresentation> countUsersSignature(){
         CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
         return ResponseEntity.ok().body(count);
     }
