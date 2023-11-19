@@ -9,16 +9,20 @@ import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolatio
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
@@ -69,7 +73,7 @@ public class UsersServiceImpl implements UsersService {
         usersRepresentation.setId(null);
         checkEmail(usersRepresentation, "insert");
         usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
-        usersRepresentation.setCreateDate(LocalDate.now());
+        usersRepresentation.setCreateDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
         usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
