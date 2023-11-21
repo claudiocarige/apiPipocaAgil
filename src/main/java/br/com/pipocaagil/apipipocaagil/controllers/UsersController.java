@@ -117,7 +117,7 @@ public class UsersController {
         return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstname)));
     }
 
-    @GetMapping(value = "/firtname-lastname")
+    @GetMapping(value = "/firstname-lastname")
     @Operation(summary = "Find by firstname and lastname ignore case ", description = "Find by firstname and lastname ignore case",
             tags = {"Users"},
             responses = {

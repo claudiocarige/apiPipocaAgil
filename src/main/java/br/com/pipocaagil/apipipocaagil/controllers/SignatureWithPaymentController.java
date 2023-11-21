@@ -5,7 +5,6 @@ import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingExceptio
 import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.emailservice.EmailSendingServiceImpl;
-import br.com.pipocaagil.apipipocaagil.services.impl.ContextCheckImpl;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +29,6 @@ public class SignatureWithPaymentController {
     private final PaymentService paymentService;
     private final UsersSignatureService signatureService;
     private final SignatureDataService signatureDataService;
-    private final ContextCheckImpl contextCheck;
     private final EmailSendingServiceImpl emailSendingService;
 
     @PostMapping("/payment/card")

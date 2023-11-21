@@ -37,7 +37,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final UsersService usersService;
 
     @Value("${pagseguro.token}")
-    private String pagBank;
+    private String keyPagBank;
 
     @Override
     public Object createPayment(OrderRepresentation order) {
@@ -59,7 +59,7 @@ public class PaymentServiceImpl implements PaymentService {
     private HttpHeaders createHeader() {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/json"));
-        headers.set("Authorization", "Bearer " + pagBank);
+        headers.set("Authorization", "Bearer " + keyPagBank);
         headers.set("accept", "application/json");
         return headers;
     }
