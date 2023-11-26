@@ -1,9 +1,9 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.representations.CountRepresentation;
-import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
-import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
-import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.interfaces.PaymentService;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.representations.OrderRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.emailservice.EmailSendingServiceImpl;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;

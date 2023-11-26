@@ -1,7 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.controllers.exceptions;
 
-import br.com.pipocaagil.apipipocaagil.payments.exception.HttpClientErrorException;
-import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.HttpClientErrorException;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
