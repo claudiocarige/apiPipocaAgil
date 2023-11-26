@@ -41,6 +41,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "api/v1/auth").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/v1/password/recovery/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/payment/result/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/social-login").permitAll()
                         .anyRequest().authenticated()
                 ).cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(
