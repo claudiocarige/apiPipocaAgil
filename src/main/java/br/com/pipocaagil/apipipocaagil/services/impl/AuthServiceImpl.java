@@ -13,13 +13,12 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtUserDetailsService userDetailsService;
+    private final JwtUserDetailsService jwtUserDetailsService;
     @Override
     public JwtToken loginUser(String username, String password){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 username,password);
         authenticationManager.authenticate(authenticationToken);
-        JwtToken token = userDetailsService.getTokenAuthenticated(username);
-        return token;
+        return jwtUserDetailsService.getTokenAuthenticated(username);
     }
 }
