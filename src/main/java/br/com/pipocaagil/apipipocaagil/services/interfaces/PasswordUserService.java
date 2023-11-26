@@ -6,5 +6,6 @@ public interface PasswordUserService {
 
     void updatePassword(Long id, UserPasswordRepresentation pass);
     String passwordRecovery(String email);
+    String randomPasswordGenerator();
 
 }

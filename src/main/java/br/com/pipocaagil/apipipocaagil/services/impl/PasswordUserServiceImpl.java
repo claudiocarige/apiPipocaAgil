@@ -52,7 +52,7 @@ public class PasswordUserServiceImpl implements PasswordUserService {
         return user;
     }
 
-    private String randomPasswordGenerator() {
+    public String randomPasswordGenerator() {
         Random random = new Random();
         var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&+=!";
         var regexPattern = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$";
