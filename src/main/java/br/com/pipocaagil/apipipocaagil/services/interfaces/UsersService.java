@@ -20,5 +20,6 @@ public interface UsersService {
     List<Users> findByBirthdayBetween(LocalDate startDate, LocalDate endDate);
     UserPermissionType findByRoleFromUsername(String username);
     void updateRoleToSigned(UserPermissionType role, Long id);
+    boolean existsByUsername(String username);
 }
 

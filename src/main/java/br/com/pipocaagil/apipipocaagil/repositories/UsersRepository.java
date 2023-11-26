@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface UsersRepository extends JpaRepository<Users,Long> {
     Optional<Users> findByUsername(String username);
 
+    boolean existsByUsername(String username);
+
     @Query("SELECT u.role FROM Users u WHERE u.username like :username")
     UserPermissionType findRoleByUsername(@Param("username") String username);
     @Query("SELECT user FROM Users user WHERE LOWER(user.firstName) = LOWER(:firstName)")

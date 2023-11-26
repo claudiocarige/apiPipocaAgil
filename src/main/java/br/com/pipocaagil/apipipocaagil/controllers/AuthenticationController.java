@@ -3,9 +3,13 @@ package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.controllers.exceptions.StandardError;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UserRequestRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.jwt.JwtToken;
 import br.com.pipocaagil.apipipocaagil.jwt.JwtUserDetailsService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.AuthService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.PasswordUserService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthService authService;
+    private final JwtUserDetailsService jwtUserDetailsService;
+    private final UsersService usersService;
+    private final PasswordUserService passwordUserService;
 
     @PostMapping(value = "/auth")
     @Operation(summary = "Authenticate User",
@@ -58,5 +63,13 @@ public class AuthenticationController {
                         HttpStatus.BAD_REQUEST.value(),
                         "Bad Credentials. There is an error in the email or password.",
                         request.getRequestURI()));
+    }
+    @PostMapping("/social-login")
+    public ResponseEntity<JwtToken> userSocialLogin(@RequestBody UserRequestRepresentation userResquest) {
+        if (!usersService.existsByUsername(userResquest.getEmail())) {
+            usersService.insert(new UsersRepresentation(userResquest.getGivenName(), userResquest.getFamilyName(),
+                    userResquest.getEmail(), passwordUserService.randomPasswordGenerator()));
+        }
+        return ResponseEntity.ok().body(jwtUserDetailsService.getTokenAuthenticated(userResquest.getEmail()));
     }
 }

@@ -44,6 +44,11 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
     public List<Users> findAll() {
         return userRepository.findAll();
     }
