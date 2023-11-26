@@ -47,4 +47,11 @@ public class UsersRepresentation {
     private LocalDateTime createDate;
 
     private String role;
+
+    public UsersRepresentation(String givenName, String familyName, String email, String password) {
+        this.firstName = givenName;
+        this.lastName = familyName;
+        this.email = email;
+        this.password = password;
+    }
 }
