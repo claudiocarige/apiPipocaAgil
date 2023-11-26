@@ -1,4 +1,4 @@
-package br.com.pipocaagil.apipipocaagil.payments.representations;
+package br.com.pipocaagil.apipipocaagil.services.paymentservice.representations;
 
 import java.util.List;
 

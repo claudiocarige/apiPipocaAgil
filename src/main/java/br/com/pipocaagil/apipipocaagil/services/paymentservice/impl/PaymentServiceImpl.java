@@ -1,12 +1,12 @@
-package br.com.pipocaagil.apipipocaagil.payments.impl;
+package br.com.pipocaagil.apipipocaagil.services.paymentservice.impl;
 
 import br.com.pipocaagil.apipipocaagil.controllers.exceptions.PaymentAuthorizationException;
 import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
-import br.com.pipocaagil.apipipocaagil.payments.exception.JsonProcessingException;
-import br.com.pipocaagil.apipipocaagil.payments.interfaces.PaymentService;
-import br.com.pipocaagil.apipipocaagil.payments.representations.OrderRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.interfaces.PaymentService;
+import br.com.pipocaagil.apipipocaagil.services.paymentservice.representations.OrderRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -74,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
             return response;
         } catch (HttpClientErrorException e) {
-            throw new br.com.pipocaagil.apipipocaagil.payments.exception.HttpClientErrorException("Verifique as informações do pagamento");
+            throw new br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.HttpClientErrorException("Verifique as informações do pagamento");
         }
     }
 
