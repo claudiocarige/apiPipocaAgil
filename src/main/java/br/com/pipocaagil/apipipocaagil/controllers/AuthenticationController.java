@@ -30,8 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class AuthenticationController {
 
-    private final JwtUserDetailsService userDetailsService;
-    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
 
     @PostMapping(value = "/auth")
     @Operation(summary = "Authenticate User",
@@ -49,11 +48,7 @@ public class AuthenticationController {
                                          HttpServletRequest request) {
         log.info("Started authentication process by EMAIL {}", userLoginRepresentation.getEmail());
         try {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userLoginRepresentation.getEmail(),userLoginRepresentation.getPassword()
-                    );
-            authenticationManager.authenticate(authenticationToken);
-            JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getEmail());
+            var token = authService.loginUser(userLoginRepresentation.getEmail(), userLoginRepresentation.getPassword());
             return ResponseEntity.ok(token);
         } catch (AuthenticationException ex) {
             log.warn("Bad Credentials from username '{}'", userLoginRepresentation.getEmail());
