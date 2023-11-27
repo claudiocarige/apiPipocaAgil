@@ -42,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Object createPayment(OrderRepresentation order) {
         var headers = createHeader();
-        Users user = usersService.findByUsername(order.getCustomer().getEmail());
+        Users user = usersService.findByUsername(order.getCustomer().email());
         order.setReference_id(generateReferenceId());
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
         var response = sendPaymentRequest(entity);

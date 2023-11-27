@@ -48,8 +48,8 @@ public class SignatureWithPaymentController {
     public ResponseEntity<Object>createPayment(@RequestBody OrderRepresentation order) throws JsonProcessingException,
                                                                                                     MessagingException {
         var payment = paymentService.createPayment(order);
-        signatureService.signatureToUser(order.getCustomer().getEmail());
-        emailSendingService.sendEmail(order.getCustomer().getEmail(),
+        signatureService.signatureToUser(order.getCustomer().email());
+        emailSendingService.sendEmail(order.getCustomer().email(),
                 "Você conseguiu sua Assinatura Pipoca Ágil!", "");
         log.info("Payment created", payment);
         return ResponseEntity.ok(payment);

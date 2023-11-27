@@ -66,10 +66,10 @@ public class AuthenticationController {
     }
     @PostMapping("/social-login")
     public ResponseEntity<JwtToken> userSocialLogin(@RequestBody UserRequestRepresentation userResquest) {
-        if (!usersService.existsByUsername(userResquest.getEmail())) {
-            usersService.insert(new UsersRepresentation(userResquest.getGivenName(), userResquest.getFamilyName(),
-                    userResquest.getEmail(), passwordUserService.randomPasswordGenerator()));
+        if (!usersService.existsByUsername(userResquest.email())) {
+            usersService.insert(new UsersRepresentation(userResquest.givenName(), userResquest.familyName(),
+                    userResquest.email(), passwordUserService.randomPasswordGenerator()));
         }
-        return ResponseEntity.ok().body(jwtUserDetailsService.getTokenAuthenticated(userResquest.getEmail()));
+        return ResponseEntity.ok().body(jwtUserDetailsService.getTokenAuthenticated(userResquest.email()));
     }
 }
