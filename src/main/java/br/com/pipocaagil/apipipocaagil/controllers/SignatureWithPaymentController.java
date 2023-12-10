@@ -55,15 +55,6 @@ public class SignatureWithPaymentController {
         return ResponseEntity.ok(payment);
     }
 
-    @PostMapping("/result/response")
-    @Operation(summary = "Receive Payment Update Response",
-            description = "Receive Payment Update Response.",
-            tags = {"Signature"})
-    public String paymentResponse(@RequestBody Object bodyResponse){
-        log.info("Payment : "+ bodyResponse);
-        return "Ok";
-    }
-
     @GetMapping("/counter")
     public ResponseEntity<CountRepresentation> countUsersSignature(){
         CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
