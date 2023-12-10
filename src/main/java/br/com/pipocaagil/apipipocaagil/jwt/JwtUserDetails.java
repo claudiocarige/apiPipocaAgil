@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.jwt;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 

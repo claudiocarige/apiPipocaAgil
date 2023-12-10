@@ -1,5 +1,6 @@
-package br.com.pipocaagil.apipipocaagil.domain;
+package br.com.pipocaagil.apipipocaagil.domain.entities;
 
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package br.com.pipocaagil.apipipocaagil.domain;
+package br.com.pipocaagil.apipipocaagil.domain.entities;
 
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import com.fasterxml.jackson.annotation.JsonFormat;

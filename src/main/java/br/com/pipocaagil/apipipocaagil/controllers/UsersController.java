@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserUpdateRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.impl.ContextCheckImpl;

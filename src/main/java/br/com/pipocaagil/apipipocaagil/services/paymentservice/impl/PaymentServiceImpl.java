@@ -1,14 +1,12 @@
 package br.com.pipocaagil.apipipocaagil.services.paymentservice.impl;
 
 import br.com.pipocaagil.apipipocaagil.controllers.exceptions.PaymentAuthorizationException;
-import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.representations.OrderRepresentation;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

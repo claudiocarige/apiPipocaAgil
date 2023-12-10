@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;

@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
