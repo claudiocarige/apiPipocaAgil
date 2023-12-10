@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/signature")
+@RequestMapping("/api/v1/user-signature")
 @Tag(name = "Signing users", description = "Contains all operations related to the resources Signing users.")
 public class UsersSignatureController {
 
