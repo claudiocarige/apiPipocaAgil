@@ -3,7 +3,6 @@ package br.com.pipocaagil.apipipocaagil.services.impl;
 import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.repositories.SignatureDataRepository;
-import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +27,6 @@ public class SignatureDataServiceImpl implements SignatureDataService {
     @Override
     public SignatureData findSignatureByUserId(Long id) {
         SignatureData signatureData = signatureDataRepository.findSignatureByUserId(id);
-        if (signatureData == null) {
-            throw new NoSuchElementException("Signature not found.");
-        }
         return signatureData;
     }
 

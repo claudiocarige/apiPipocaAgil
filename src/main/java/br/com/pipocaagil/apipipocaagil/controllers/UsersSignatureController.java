@@ -2,6 +2,7 @@ package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -65,6 +66,10 @@ public class UsersSignatureController {
             })
     public ResponseEntity<UsersRepresentation> findSignatureByUserId(@PathVariable Long id) {
         log.info("Find user by id: {}", id);
-        return ResponseEntity.ok().body(modelMapper.map(signatureDataService.findSignatureByUserId(id).getUser(), UsersRepresentation.class));
+        var signatureData = signatureDataService.findSignatureByUserId(id);
+        if (signatureData == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        return ResponseEntity.ok().body(modelMapper.map(signatureData.getUser(), UsersRepresentation.class));
     }
 }
