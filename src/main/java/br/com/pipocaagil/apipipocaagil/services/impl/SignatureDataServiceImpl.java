@@ -1,9 +1,8 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
-import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.repositories.SignatureDataRepository;
-import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,8 +26,7 @@ public class SignatureDataServiceImpl implements SignatureDataService {
 
     @Override
     public SignatureData findSignatureByUserId(Long id) {
-        Optional<SignatureData> signatureData = signatureDataRepository.findSignatureByUserId(id);
-        return signatureData.orElseThrow(() -> new NoSuchElementException("Signature not found!"));
+        return signatureDataRepository.findSignatureByUserId(id);
     }
 
     @Override

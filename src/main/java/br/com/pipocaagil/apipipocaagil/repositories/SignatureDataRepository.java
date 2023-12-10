@@ -1,13 +1,12 @@
 package br.com.pipocaagil.apipipocaagil.repositories;
 
-import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface SignatureDataRepository extends JpaRepository<SignatureData, Long> {
 
@@ -18,5 +17,5 @@ public interface SignatureDataRepository extends JpaRepository<SignatureData, Lo
     List<Users> findUsersWithSignature();
 
     @Query("SELECT s FROM SignatureData s WHERE s.user.id = :userId")
-    Optional<SignatureData> findSignatureByUserId(@Param("userId") Long userId);
+    SignatureData findSignatureByUserId(@Param("userId") Long userId);
 }

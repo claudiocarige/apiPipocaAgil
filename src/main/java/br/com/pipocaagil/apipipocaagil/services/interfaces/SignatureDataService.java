@@ -1,7 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.services.interfaces;
 
-import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 
 import java.util.List;
 
