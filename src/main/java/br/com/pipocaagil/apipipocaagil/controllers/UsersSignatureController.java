@@ -1,7 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
-import br.com.pipocaagil.apipipocaagil.domain.SignatureData;
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import java.util.List;
 public class UsersSignatureController {
 
     private final SignatureDataService signatureDataService;
+    private final ModelMapper modelMapper;
 
     @GetMapping
     @Operation(summary = "Find all users Signature ",
@@ -40,9 +42,12 @@ public class UsersSignatureController {
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<List<Users>> findUsersWithSignature() {
+    public ResponseEntity<List<UsersRepresentation>> findUsersWithSignature() {
         log.info("Find all users Signature" );
-        return ResponseEntity.ok().body(signatureDataService.findUsersWithSignature());
+        return ResponseEntity.ok().body(
+                signatureDataService.findUsersWithSignature().stream().map(
+                        users -> modelMapper.map(users, UsersRepresentation.class)
+                ).toList());
     }
 
     @GetMapping("/{id}")
@@ -58,8 +63,8 @@ public class UsersSignatureController {
                     @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<SignatureData> findSignatureByUserId(@PathVariable Long id) {
+    public ResponseEntity<UsersRepresentation> findSignatureByUserId(@PathVariable Long id) {
         log.info("Find user by id: {}", id);
-        return ResponseEntity.ok().body(signatureDataService.findSignatureByUserId(id));
+        return ResponseEntity.ok().body(modelMapper.map(signatureDataService.findSignatureByUserId(id).getUser(), UsersRepresentation.class));
     }
 }
