@@ -1,6 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
 import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.representations.CountRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
@@ -24,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/user-signature")
-@Tag(name = "Signing users", description = "Contains all operations related to the resources Signing users.")
+@Tag(name = "Subscription users", description = "Contains all operations related to the resources Subscription users.")
 public class UsersSignatureController {
 
     private final SignatureDataService signatureDataService;
@@ -32,7 +33,7 @@ public class UsersSignatureController {
 
     @GetMapping
     @Operation(summary = "Find all users Signature ",
-            description = "Performs credit card payment for monthly subscribers.",
+            description = "Retrieves a list of users who have subscriptions with associated signature data.",
             tags = {"Users"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
@@ -71,5 +72,20 @@ public class UsersSignatureController {
             throw new NoSuchElementException("User not found");
         }
         return ResponseEntity.ok().body(modelMapper.map(signatureData.getUser(), UsersRepresentation.class));
+    }
+
+    @GetMapping("/counter")
+    @Operation(summary = "Count Users with Signature",
+            description = "Retrieves the count of users who have subscriptions with associated signature data.",
+            tags = {"Users"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CountRepresentation.class))
+                    ),
+                    @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
+            })
+    public ResponseEntity<CountRepresentation> countUsersSignature(){
+        CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
+        return ResponseEntity.ok().body(count);
     }
 }

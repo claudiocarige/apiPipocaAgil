@@ -1,12 +1,10 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
-import br.com.pipocaagil.apipipocaagil.domain.representations.CountRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.emailservice.EmailSendingServiceImpl;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.representations.OrderRepresentation;
-import br.com.pipocaagil.apipipocaagil.services.emailservice.EmailSendingServiceImpl;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,19 +14,21 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/signature")
-@Tag(name = "Signing users", description = "Contains all operations related to the resources Signing users.")
+@Tag(name = "Payment Cred Card", description = "Contains all operations related to the resources Signing users.")
 public class SignatureWithPaymentController {
 
     private final PaymentService paymentService;
     private final UsersSignatureService signatureService;
-    private final SignatureDataService signatureDataService;
     private final EmailSendingServiceImpl emailSendingService;
 
     @PostMapping("/payment/card")
@@ -53,11 +53,5 @@ public class SignatureWithPaymentController {
                 "Você conseguiu sua Assinatura Pipoca Ágil!", "");
         log.info("Payment created", payment);
         return ResponseEntity.ok(payment);
-    }
-
-    @GetMapping("/counter")
-    public ResponseEntity<CountRepresentation> countUsersSignature(){
-        CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
-        return ResponseEntity.ok().body(count);
     }
 }
