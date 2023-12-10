@@ -4,6 +4,9 @@ import br.com.pipocaagil.apipipocaagil.controllers.exceptions.PaymentAuthorizati
 import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
 import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.DataIntegrityViolationException;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.exception.JsonProcessingException;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.interfaces.PaymentService;
 import br.com.pipocaagil.apipipocaagil.services.paymentservice.representations.OrderRepresentation;
@@ -39,14 +42,23 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Object createPayment(OrderRepresentation order) {
+
         var headers = createHeader();
         Users user = usersService.findByUsername(order.getCustomer().email());
+        isUserAlreadyHasSignature(user);
         order.setReference_id(generateReferenceId());
         HttpEntity<Object> entity = new HttpEntity<>(order, headers);
         var response = sendPaymentRequest(entity);
         var bodyResponse = response.getBody();
         saveResultInDB(bodyResponse, user);
         return bodyResponse;
+    }
+
+    private void isUserAlreadyHasSignature(Users user) {
+        SignatureData obj = signatureDataService.findSignatureByUserId(user.getId());
+        if (obj != null) {
+            throw new DataIntegrityViolationException("User already has a signature");
+        }
     }
 
     private String generateReferenceId() {
