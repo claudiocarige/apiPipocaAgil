@@ -53,7 +53,7 @@ public class AuthenticationController {
                                          HttpServletRequest request) {
         log.info("Started authentication process by EMAIL {}", userLoginRepresentation.getEmail());
         try {
-            var token = authService.loginUser(userLoginRepresentation.getEmail(), userLoginRepresentation.getPassword());
+            var token = authService.loginUser(userLoginRepresentation.getEmail().toLowerCase(), userLoginRepresentation.getPassword());
             return ResponseEntity.ok(token);
         } catch (AuthenticationException ex) {
             log.warn("Bad Credentials from username '{}'", userLoginRepresentation.getEmail());

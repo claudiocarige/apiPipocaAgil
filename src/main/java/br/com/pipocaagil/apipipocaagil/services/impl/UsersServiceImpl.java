@@ -15,9 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,13 +39,13 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users findByUsername(String username) {
-        Optional<Users> user = userRepository.findByUsername(username);
+        Optional<Users> user = userRepository.findByUsername(username.toLowerCase());
         return user.orElseThrow(() -> new NoSuchElementException("E-mail not registered! Please review your request."));
     }
 
     @Override
     public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
+        return userRepository.existsByUsernameIgnoreCase(username.toLowerCase());
     }
 
     @Override
@@ -70,18 +70,20 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserPermissionType findByRoleFromUsername(String username) {
-        return userRepository.findRoleByUsername(username);
+        return userRepository.findRoleByUsername(username.toLowerCase());
     }
 
     @Override
     public Users insert(UsersRepresentation usersRepresentation) {
         usersRepresentation.setId(null);
-        checkEmail(usersRepresentation, "insert");
+        usersRepresentation.setEmail(usersRepresentation.getEmail().toLowerCase());
+        checkEmail(usersRepresentation);
         usersRepresentation.setRole(UserPermissionType.ROLE_USER.name());
         usersRepresentation.setCreateDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
         usersRepresentation.setPassword(passwordEncoder.encode(usersRepresentation.getPassword()));
         return userRepository.save(mapper.map(usersRepresentation, Users.class));
     }
+
     @Transactional
     @Override
     public Users update(Long id, UserUpdateRepresentation usersRepresentation) {
@@ -107,17 +109,14 @@ public class UsersServiceImpl implements UsersService {
         userRepository.deleteById(id);
     }
 
-    private void checkEmail(UsersRepresentation usersRepresentation, String test) {
+    private void checkEmail(UsersRepresentation usersRepresentation) {
         Optional<Users> user = userRepository.findByUsername(usersRepresentation.getEmail());
-        if (test.equals("insert")) {
-            if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
-                throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
-            }
-        } else {
-            user = userRepository.findById(usersRepresentation.getId());
-            if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getEmail())) {
-                throw new DataIntegrityViolationException("Email cannot be changed.");
-            }
+        if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
+            throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
+        }
+        user = userRepository.findById(usersRepresentation.getId());
+        if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getEmail())) {
+            throw new DataIntegrityViolationException("Email cannot be changed.");
         }
     }
 }
