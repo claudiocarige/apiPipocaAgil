@@ -26,8 +26,7 @@ public class SignatureDataServiceImpl implements SignatureDataService {
 
     @Override
     public SignatureData findSignatureByUserId(Long id) {
-        SignatureData signatureData = signatureDataRepository.findSignatureByUserId(id);
-        return signatureData;
+        return signatureDataRepository.findSignatureByUserId(id);
     }
 
     @Override
