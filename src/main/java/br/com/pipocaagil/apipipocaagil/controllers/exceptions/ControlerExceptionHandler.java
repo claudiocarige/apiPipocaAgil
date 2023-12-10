@@ -101,22 +101,8 @@ public class ControlerExceptionHandler {
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<StandardError> httpClientErrorException(HttpClientErrorException ex, HttpServletRequest request){
         StandardError error = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(),
-                extractErrorDescription(ex.getMessage()), request.getRequestURI());
+                ex.getMessage(), request.getRequestURI());
         log.error("Exception - HttpClientErrorException  --  " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
-
-    public String extractErrorDescription(String erroJSON) {
-        try {
-            int startIndex = erroJSON.indexOf("description\":\"") + "description\":\"".length();
-            int endIndex = erroJSON.indexOf("\"", startIndex);
-            var part1 = erroJSON.substring(startIndex, endIndex);
-            startIndex = erroJSON.indexOf("parameter_name\":\"") + "parameter_name\":\"".length();
-            endIndex = erroJSON.indexOf("\"", startIndex);
-            var part2 = erroJSON.substring(startIndex, endIndex);
-            return part1 + " / " + part2;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
