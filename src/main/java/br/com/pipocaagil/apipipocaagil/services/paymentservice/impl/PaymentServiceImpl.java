@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static br.com.pipocaagil.apipipocaagil.services.FormatDate.formatStringToLocalDateTime;
+import static br.com.pipocaagil.apipipocaagil.services.impl.FormatDate.formatStringToLocalDateTime;
 
 
 @Slf4j
