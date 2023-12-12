@@ -70,7 +70,7 @@ public class PasswordUserController {
         log.info("User Password Recovery Initiated");
         var password = passwordUserService.passwordRecovery(email);
         emailSendingService.sendEmail(email,
-                "Recuperação de senha!", password);
+                "reset-password", password);
         return ResponseEntity.ok().body("Password sent to the E-mail!");
     }
 }

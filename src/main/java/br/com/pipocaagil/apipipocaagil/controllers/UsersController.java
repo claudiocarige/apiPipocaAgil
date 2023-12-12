@@ -179,7 +179,7 @@ public class UsersController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
         emailSendingService.sendEmail(usersRepresentation.getEmail(),
-                "Bem-vinda(o) à família Pipoca Ágil!", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
+                "welcome", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
         return ResponseEntity.created(uri).build();
     }
 

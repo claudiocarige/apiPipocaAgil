@@ -50,7 +50,7 @@ public class SignatureWithPaymentController {
         var payment = paymentService.createPayment(order);
         signatureService.signatureToUser(order.getCustomer().email());
         emailSendingService.sendEmail(order.getCustomer().email(),
-                "Você conseguiu sua Assinatura Pipoca Ágil!", "");
+                "congratulations", "");
         log.info("Payment created", payment);
         return ResponseEntity.ok(payment);
     }

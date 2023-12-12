@@ -24,37 +24,31 @@ public class EmailSendingServiceImpl implements EmailSendingService {
     public void sendEmail(String toEmail, String subject, String data) throws MessagingException {
         log.info("Sending email to: " + toEmail);
         try {
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(toEmail);
-            helper.setSubject(subject);
-            var emailContent = createEmailBody(toEmail, subject, data);
-            helper.setText(emailContent, true);
-            javaMailSender.send(helper.getMimeMessage());
+            var message = createEmail(toEmail, subject, data);
+            javaMailSender.send(message);
         } catch (MessagingException e) {
             log.error("Error sending the email: " + e.getMessage());
             throw new MessagingException("Error sending the email: ", e);
         }
     }
 
+    private MimeMessage createEmail(String toEmail, String subject, String data ) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        var emailContent = createEmailBody(toEmail, subject, data);
+        helper.setText(emailContent, true);
+        return helper.getMimeMessage();
+    }
+
     private String createEmailBody(String email, String subject, String data ) {
         Context context = new Context();
-
-        var emailContent = "";
-        if (subject.equals("Bem-vinda(o) à família Pipoca Ágil!")) {
-            log.info("Creating Congratulations Email for New Registration!");
-            context.setVariable("data", data);
-            emailContent = templateEngine.process("emails/welcome.html", context);
-        } else if (subject.equals("Recuperação de senha!")) {
-            log.info("Creating Email for Password Recovery!");
+        context.setVariable("data", data);
+        if (subject.equals("congratulations") || subject.equals("reset-password")) {
             context.setVariable("name", usersService.findByUsername(email).getFirstName());
-            context.setVariable("data", data);
-            emailContent = templateEngine.process("emails/reset-password.html", context);
-        } else if (subject.equals("Você conseguiu sua Assinatura Pipoca Ágil!")) {
-            log.info("Congratulations Email Creation for Subscription!");
-            context.setVariable("name", usersService.findByUsername(email).getFirstName());
-            emailContent = templateEngine.process("emails/congratulations.html", context);
         }
+        var emailContent = templateEngine.process("emails/"+subject+".html", context);
         return emailContent;
     }
 }
