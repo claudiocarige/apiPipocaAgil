@@ -114,9 +114,5 @@ public class UsersServiceImpl implements UsersService {
         if (user.isPresent() && !user.get().getId().equals(usersRepresentation.getId())) {
             throw new DataIntegrityViolationException("E-mail already registered! Please review your request.");
         }
-        user = userRepository.findById(usersRepresentation.getId());
-        if (user.isPresent() && !user.get().getUsername().equals(usersRepresentation.getEmail())) {
-            throw new DataIntegrityViolationException("Email cannot be changed.");
-        }
     }
 }
