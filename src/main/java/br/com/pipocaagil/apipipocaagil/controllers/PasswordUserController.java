@@ -52,7 +52,7 @@ public class PasswordUserController {
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/recovery/{email}")
+    @GetMapping(value = "/recovery/{email}")
     @Operation(summary = "Reset your password ",
             description = "Recovers the user's password by sending a new password to the registered e-mail.",
             tags = {"Users"},
@@ -70,7 +70,7 @@ public class PasswordUserController {
         log.info("User Password Recovery Initiated");
         var password = passwordUserService.passwordRecovery(email);
         emailSendingService.sendEmail(email,
-                "Recuperação de senha!", password);
+                "reset-password", password);
         return ResponseEntity.ok().body("Password sent to the E-mail!");
     }
 }

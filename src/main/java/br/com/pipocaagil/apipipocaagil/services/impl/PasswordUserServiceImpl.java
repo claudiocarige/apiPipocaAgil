@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
 import br.com.pipocaagil.apipipocaagil.repositories.UsersRepository;
 import br.com.pipocaagil.apipipocaagil.services.exceptions.PasswordInvalidException;
@@ -52,7 +52,7 @@ public class PasswordUserServiceImpl implements PasswordUserService {
         return user;
     }
 
-    private String randomPasswordGenerator() {
+    public String randomPasswordGenerator() {
         Random random = new Random();
         var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&+=!";
         var regexPattern = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$";

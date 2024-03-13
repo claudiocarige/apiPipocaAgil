@@ -1,5 +1,6 @@
-package br.com.pipocaagil.apipipocaagil.domain;
+package br.com.pipocaagil.apipipocaagil.domain.entities;
 
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.SignatureType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -7,9 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Getter
@@ -30,11 +30,9 @@ public class SignatureData {
     @Enumerated(EnumType.STRING)
     private SignatureType signatureType;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime paidAt;
+    private OffsetDateTime paidAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime expirationAt;
+    private OffsetDateTime  expirationAt;
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private Users user;

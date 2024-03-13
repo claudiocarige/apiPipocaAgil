@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -40,11 +41,17 @@ public class UsersRepresentation {
     private String password;
 
     @NotNull(message = "The BIRTHDAY field is required!")
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
-
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate createDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDateTime createDate;
 
     private String role;
+
+    public UsersRepresentation(String givenName, String familyName, String email, String password) {
+        this.firstName = givenName;
+        this.lastName = familyName;
+        this.email = email;
+        this.password = password;
+    }
 }

@@ -1,79 +1,91 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
-import br.com.pipocaagil.apipipocaagil.controllers.exceptions.PaymentAuthorizationException;
-import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
-import br.com.pipocaagil.apipipocaagil.domain.representations.CardDetailsRepresentation;
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserPasswordRepresentation;
-import br.com.pipocaagil.apipipocaagil.jwt.JwtToken;
-import br.com.pipocaagil.apipipocaagil.jwt.JwtUserDetailsService;
-import br.com.pipocaagil.apipipocaagil.services.impl.ContextCheckImpl;
-import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
+import br.com.pipocaagil.apipipocaagil.domain.entities.SignatureData;
+import br.com.pipocaagil.apipipocaagil.domain.representations.CountRepresentation;
+import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
+import br.com.pipocaagil.apipipocaagil.services.exceptions.NoSuchElementException;
+import br.com.pipocaagil.apipipocaagil.services.interfaces.SignatureDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/signature")
-@Tag(name = "Signing users", description = "Contains all operations related to the resources Signing users.")
+@RequestMapping("/api/v1/user-signature")
+@Tag(name = "Subscription users", description = "Contains all operations related to the resources Subscription users.")
 public class UsersSignatureController {
 
-    private final JwtUserDetailsService userDetailsService;
-    private final UsersSignatureService signatureService;
-    private final ContextCheckImpl contextCheck;
+    private final SignatureDataService signatureDataService;
+    private final ModelMapper modelMapper;
 
-    @PostMapping(value = "/payment")
-    @Operation(summary = "Signing users ",
-            description = "Performs credit card payment for monthly subscribers.",
+    @GetMapping
+    @Operation(summary = "Find all users Signature ",
+            description = "Retrieves a list of users who have subscriptions with associated signature data.",
             tags = {"Users"},
             responses = {
-                    @ApiResponse(description = "Success", responseCode = "204",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserPasswordRepresentation.class))
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignatureData.class))
                     ),
-                    @ApiResponse(responseCode = "204", description = "No Content", content = @Content),
                     @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
             })
-    public ResponseEntity<?> signatureToUser(
-                 @RequestBody @Valid CardDetailsRepresentation cardDetailsRepresentation, HttpServletRequest request) {
-        UserLoginRepresentation userLoginRepresentation = contextCheck.checkUser();
-        log.info("Started user subscription for the email : {}", userLoginRepresentation.getEmail());
-        if (!checkCard(cardDetailsRepresentation)){
-            log.warn("Unauthorized Card!");
-            throw new PaymentAuthorizationException("Unauthorized Card!");
-        }
-        signatureService.signatureToUser(userLoginRepresentation, UserPermissionType.ROLE_SIGNED);
-        JwtToken token = userDetailsService.getTokenAuthenticated(userLoginRepresentation.getEmail());
-        return ResponseEntity.ok(token);
+    public ResponseEntity<List<UsersRepresentation>> findUsersWithSignature() {
+        log.info("Find all users Signature" );
+        return ResponseEntity.ok().body(
+                signatureDataService.findUsersWithSignature().stream().map(
+                        users -> modelMapper.map(users, UsersRepresentation.class)
+                ).toList());
     }
 
-    private static boolean checkCard(CardDetailsRepresentation cardDetailsRepresentation){
-        var cardNumber = "4929857104078491";
-        var cardHolderName = "Pipoca Agil";
-        var securityCode = "415";
-        var cardCpf = "09199308088";
-        var cardExpirationDate = "27/06/2024";
-        var cardBrand = "VISA";
-        return  cardDetailsRepresentation.getCardNumber().equals(cardNumber) &&
-                cardDetailsRepresentation.getCardHolderName().equals(cardHolderName) &&
-                cardDetailsRepresentation.getSecurityCode().equals(securityCode) &&
-                cardDetailsRepresentation.getExpirationDate().equals(cardExpirationDate) &&
-                cardDetailsRepresentation.getCpf().equals(cardCpf) &&
-                cardDetailsRepresentation.getCardBrand().equals(cardBrand);
+    @GetMapping("/{id}")
+    @Operation(summary = "Find user Signature by UserId",
+            description = "Find user by id with Subscription in Pipoca Ágil.",
+            tags = {"Signature"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SignatureData.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
+            })
+    public ResponseEntity<UsersRepresentation> findSignatureByUserId(@PathVariable Long id) {
+        log.info("Find user by id: {}", id);
+        var signatureData = signatureDataService.findSignatureByUserId(id);
+        if (signatureData == null) {
+            throw new NoSuchElementException("User not found");
+        }
+        return ResponseEntity.ok().body(modelMapper.map(signatureData.getUser(), UsersRepresentation.class));
+    }
+
+    @GetMapping("/counter")
+    @Operation(summary = "Count Users with Signature",
+            description = "Retrieves the count of users who have subscriptions with associated signature data.",
+            tags = {"Users"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CountRepresentation.class))
+                    ),
+                    @ApiResponse(responseCode = "500", description = "Internal Error", content = @Content)
+            })
+    public ResponseEntity<CountRepresentation> countUsersSignature(){
+        CountRepresentation count = new CountRepresentation(signatureDataService.countUsersSignature());
+        return ResponseEntity.ok().body(count);
     }
 }

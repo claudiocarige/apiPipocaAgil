@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.repositories;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users,Long> {
     Optional<Users> findByUsername(String username);
+
+    boolean existsByUsernameIgnoreCase(String username);
 
     @Query("SELECT u.role FROM Users u WHERE u.username like :username")
     UserPermissionType findRoleByUsername(@Param("username") String username);

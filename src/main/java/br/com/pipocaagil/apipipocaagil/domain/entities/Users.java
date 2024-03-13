@@ -1,4 +1,4 @@
-package br.com.pipocaagil.apipipocaagil.domain;
+package br.com.pipocaagil.apipipocaagil.domain.entities;
 
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -31,10 +32,10 @@ public class Users {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, length = 200)
     private String password;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthday;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate createDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDateTime createDate;
     @Enumerated(EnumType.STRING)
     private UserPermissionType role;
 

@@ -39,8 +39,9 @@ public class SpringSecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/auth").permitAll()
-                        .requestMatchers(HttpMethod.POST, "api/v1/password/reset/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/password/recovery/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/v1/payment/result/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/v1/social-login").permitAll()
                         .anyRequest().authenticated()
                 ).cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(
@@ -69,7 +70,7 @@ public class SpringSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
         configuration.addExposedHeader("Authorization");
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

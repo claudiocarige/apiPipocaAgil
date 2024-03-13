@@ -1,7 +1,7 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.enums.UserPermissionType;
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersSignatureService;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +15,13 @@ public class UsersSignatureServiceImpl implements UsersSignatureService {
 
     private final UsersService userService;
 
-    public void signatureToUser(UserLoginRepresentation userLoginRepresentation, UserPermissionType role){
-        userService.updateRoleToSigned(userLoginRepresentation, UserPermissionType.ROLE_SIGNED);
-        log.info("Signature to user");
+    @Override
+    public void signatureToUser(String email) {
+        Users user = userService.findByUsername(email);
+        if (!user.getRole().equals(UserPermissionType.ROLE_ADMIN)) {
+            userService.updateRoleToSigned(UserPermissionType.ROLE_SIGNED, user.getId());
+            log.info("User has been changed to subscriber");
+        }
+        log.info("User hasn't been changed to subscriber");
     }
-
-    public void toPayment(){
-        log.info("Payment");
-
-    }
-
 }

@@ -1,6 +1,6 @@
 package br.com.pipocaagil.apipipocaagil.controllers;
 
-import br.com.pipocaagil.apipipocaagil.domain.Users;
+import br.com.pipocaagil.apipipocaagil.domain.entities.Users;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UserUpdateRepresentation;
 import br.com.pipocaagil.apipipocaagil.domain.representations.UsersRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.impl.ContextCheckImpl;
@@ -117,7 +117,7 @@ public class UsersController {
         return ResponseEntity.ok().body(toConvertCollection(userService.findByNameIgnoreCase(firstname)));
     }
 
-    @GetMapping(value = "/firtname-lastname")
+    @GetMapping(value = "/firstname-lastname")
     @Operation(summary = "Find by firstname and lastname ignore case ", description = "Find by firstname and lastname ignore case",
             tags = {"Users"},
             responses = {
@@ -179,7 +179,7 @@ public class UsersController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}")
                 .buildAndExpand(userService.insert(usersRepresentation).getId()).toUri();
         emailSendingService.sendEmail(usersRepresentation.getEmail(),
-                "Bem vindo ao Pipoca Ágil", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
+                "welcome", String.format((usersRepresentation.getFirstName() +" "+ usersRepresentation.getLastName())));
         return ResponseEntity.created(uri).build();
     }
 

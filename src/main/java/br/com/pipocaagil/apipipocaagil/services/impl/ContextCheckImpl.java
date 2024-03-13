@@ -1,6 +1,5 @@
 package br.com.pipocaagil.apipipocaagil.services.impl;
 
-import br.com.pipocaagil.apipipocaagil.domain.representations.UserLoginRepresentation;
 import br.com.pipocaagil.apipipocaagil.services.interfaces.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ContextCheckImpl{
+public final class ContextCheckImpl{
 
     private final UsersService userService;
     public void checkUser(Long id){
@@ -25,15 +24,5 @@ public class ContextCheckImpl{
                 throw new AccessDeniedException("Access denied, You're not authorized to modify this User");
             }
         }
-    }
-    public UserLoginRepresentation checkUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var username = authentication.getName();
-        log.info("Checking user {} ", username);
-        var user = userService.findByUsername(username);
-        if (username == null){
-            throw new AccessDeniedException("Access Denied. You must be logged in for this operation!");
-        }
-        return new UserLoginRepresentation(user.getUsername(), user.getPassword());
     }
 }
